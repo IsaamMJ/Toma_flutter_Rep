@@ -75,112 +75,112 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
       padding: const EdgeInsets.symmetric(vertical: 80),
       color: Colors.white,
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: Column(
-            children: [
-              // Header
-              Text(
-                'What Our Customers Say About Us',
-                style: TextStyle(
-                  fontSize: isMobile ? 28 : 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.3),
-
-              const SizedBox(height: 60),
-
-              // Testimonial content
-              SizedBox(
-                height: isMobile ? 600 : 500,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: testimonials.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return _buildTestimonialCard(testimonials[index], isMobile);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              // Navigation controls
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Page indicators
-                  Row(
-                    children: testimonials.asMap().entries.map((entry) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: currentIndex == entry.key ? 12 : 8,
-                        height: currentIndex == entry.key ? 12 : 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: currentIndex == entry.key
-                              ? Colors.black87
-                              : Colors.grey.shade300,
-                        ),
-                      ).animate().scale(
-                        duration: 200.ms,
-                        curve: Curves.easeInOut,
-                      );
-                    }).toList(),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Column(
+              children: [
+                // Header
+                Text(
+                  'What Our Customers Say About Us',
+                  style: TextStyle(
+                    fontSize: isMobile ? 28 : 42,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.3),
 
-                  const SizedBox(width: 40),
+                const SizedBox(height: 60),
 
-                  // Navigation arrows
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _previousTestimonial,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Colors.grey.shade600,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      GestureDetector(
-                        onTap: _nextTestimonial,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.grey.shade600,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
+                // Testimonial content
+                SizedBox(
+                  height: isMobile ? 600 : 500,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: testimonials.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return _buildTestimonialCard(testimonials[index], isMobile);
+                    },
                   ),
-                ],
-              ),
-            ],
+                ),
+
+                const SizedBox(height: 40),
+
+                // Navigation controls
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Page indicators
+                    Row(
+                      children: testimonials.asMap().entries.map((entry) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: currentIndex == entry.key ? 12 : 8,
+                          height: currentIndex == entry.key ? 12 : 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: currentIndex == entry.key
+                                ? Colors.black87
+                                : Colors.grey.shade300,
+                          ),
+                        ).animate().scale(
+                          duration: 200.ms,
+                          curve: Curves.easeInOut,
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(width: 40),
+
+                    // Navigation arrows
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _previousTestimonial,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.grey.shade600,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: _nextTestimonial,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.grey.shade600,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

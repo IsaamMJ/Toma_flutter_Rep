@@ -14,14 +14,14 @@ class AutomationCTASection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80),
       color: Colors.grey.shade50, // Light gray background
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: ResponsiveHelper.isMobile(context)
+                ? _buildMobileLayout(context)
+                : _buildDesktopLayout(context),
           ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: ResponsiveHelper.isMobile(context)
-              ? _buildMobileLayout(context)
-              : _buildDesktopLayout(context),
         ),
       ),
     );
@@ -32,7 +32,7 @@ class AutomationCTASection extends StatelessWidget {
       children: [
         _buildContentSection(context),
         const SizedBox(height: 40),
-        _buildLaptopSection(context),
+        _buildImageSection(context),
       ],
     );
   }
@@ -47,7 +47,7 @@ class AutomationCTASection extends StatelessWidget {
         const SizedBox(width: 80),
         Expanded(
           flex: 6,
-          child: _buildLaptopSection(context),
+          child: _buildImageSection(context),
         ),
       ],
     );
@@ -115,7 +115,7 @@ class AutomationCTASection extends StatelessWidget {
     );
   }
 
-  Widget _buildLaptopSection(BuildContext context) {
+  Widget _buildImageSection(BuildContext context) {
     return Container(
       height: ResponsiveHelper.isMobile(context) ? 300 : 400,
       decoration: BoxDecoration(
@@ -129,177 +129,68 @@ class AutomationCTASection extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          // Background pattern/texture
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.grey.shade100,
-                    Colors.white,
-                    Colors.grey.shade50,
-                  ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: [
+            // Background pattern/texture (optional - can be removed if not needed)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.grey.shade100,
+                      Colors.white,
+                      Colors.grey.shade50,
+                    ],
+                  ),
                 ),
-              ),
-              child: CustomPaint(
-                painter: WavePatternPainter(),
+                child: CustomPaint(
+                  painter: WavePatternPainter(),
+                ),
               ),
             ),
-          ),
 
-          // Laptop mockup
-          Center(
-            child: Container(
-              width: ResponsiveHelper.isMobile(context) ? 240 : 320,
-              height: ResponsiveHelper.isMobile(context) ? 160 : 200,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey.shade400,
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Screen
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Stack(
+            // Main CTA Image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/cta_image.png',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Browser-like interface
-                          Column(
-                            children: [
-                              Container(
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(6),
-                                    topRight: Radius.circular(6),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.yellow,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.green,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Website header
-                                      Container(
-                                        height: 16,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      // Content lines
-                                      Container(
-                                        height: 8,
-                                        width: double.infinity * 0.7,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade300,
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Container(
-                                        height: 8,
-                                        width: double.infinity * 0.5,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade300,
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      // Car image placeholder
-                                      Container(
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.directions_car,
-                                            color: Colors.grey.shade400,
-                                            size: 24,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Icon(
+                            Icons.image_not_supported_outlined,
+                            size: 48,
+                            color: Colors.grey.shade400,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Image not found',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  // Keyboard/base
-                  Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ).animate().fadeIn(duration: 800.ms, delay: 300.ms).slideX(begin: 0.1);
   }
