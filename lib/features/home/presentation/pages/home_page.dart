@@ -6,6 +6,8 @@ import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/widgets/navigation_bar.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
+import '../widgets/hero_section.dart';
+import '../widgets/clients_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,6 +45,7 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: AppColors.background,
           body: Stack(
             children: [
               SingleChildScrollView(
@@ -51,59 +54,33 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     const SizedBox(height: 80), // Navigation space
 
-                    // Hero Section
-                    Container(
-                      height: 600,
-                      width: double.infinity,
-                      color: AppColors.background,
-                      child: Center(
-                        child: Padding(
-                          padding: ResponsiveHelper.getHorizontalPadding(context),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'We Create Digital Excellence',
-                                style: ResponsiveHelper.isMobile(context)
-                                    ? AppTextStyles.heroTitleMobile
-                                    : AppTextStyles.heroTitle,
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Transforming ideas into powerful digital experiences',
-                                style: AppTextStyles.heroSubtitle,
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 32),
-                              ElevatedButton(
-                                onPressed: () => _scrollToSection(_portfolioKey),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 32,
-                                      vertical: 16
-                                  ),
-                                ),
-                                child: const Text('View Our Work'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    // Hero Section with animations
+                    HeroSection(
+                      onViewWorkPressed: () => _scrollToSection(_portfolioKey),
                     ),
+
+                    // Clients Section - immediately after hero
+                    const ClientsSection(),
 
                     // Services Section
                     Container(
                       key: _servicesKey,
-                      height: 400,
+                      width: double.infinity,
                       color: AppColors.surface,
+                      padding: const EdgeInsets.symmetric(vertical: 80),
                       child: Center(
-                        child: Text(
-                          'Our Services',
-                          style: ResponsiveHelper.isMobile(context)
-                              ? AppTextStyles.sectionTitleMobile
-                              : AppTextStyles.sectionTitle,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: ResponsiveHelper.getMaxWidth(context),
+                          ),
+                          padding: ResponsiveHelper.getHorizontalPadding(context),
+                          child: Text(
+                            'Our Services',
+                            style: ResponsiveHelper.isMobile(context)
+                                ? AppTextStyles.sectionTitleMobile
+                                : AppTextStyles.sectionTitle,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
@@ -111,14 +88,22 @@ class _HomePageState extends State<HomePage> {
                     // Portfolio Section
                     Container(
                       key: _portfolioKey,
-                      height: 400,
-                      color: AppColors.card,
+                      width: double.infinity,
+                      color: AppColors.background,
+                      padding: const EdgeInsets.symmetric(vertical: 80),
                       child: Center(
-                        child: Text(
-                          'Our Portfolio',
-                          style: ResponsiveHelper.isMobile(context)
-                              ? AppTextStyles.sectionTitleMobile
-                              : AppTextStyles.sectionTitle,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: ResponsiveHelper.getMaxWidth(context),
+                          ),
+                          padding: ResponsiveHelper.getHorizontalPadding(context),
+                          child: Text(
+                            'Our Portfolio',
+                            style: ResponsiveHelper.isMobile(context)
+                                ? AppTextStyles.sectionTitleMobile
+                                : AppTextStyles.sectionTitle,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
@@ -126,14 +111,22 @@ class _HomePageState extends State<HomePage> {
                     // Contact Section
                     Container(
                       key: _contactKey,
-                      height: 400,
+                      width: double.infinity,
                       color: AppColors.surface,
+                      padding: const EdgeInsets.symmetric(vertical: 80),
                       child: Center(
-                        child: Text(
-                          'Contact Us',
-                          style: ResponsiveHelper.isMobile(context)
-                              ? AppTextStyles.sectionTitleMobile
-                              : AppTextStyles.sectionTitle,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: ResponsiveHelper.getMaxWidth(context),
+                          ),
+                          padding: ResponsiveHelper.getHorizontalPadding(context),
+                          child: Text(
+                            'Contact Us',
+                            style: ResponsiveHelper.isMobile(context)
+                                ? AppTextStyles.sectionTitleMobile
+                                : AppTextStyles.sectionTitle,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
@@ -141,26 +134,30 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              // Fixed Navigation
+              // Fixed Navigation Bar
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 child: CustomNavigationBar(
                   onContactPressed: () => _scrollToSection(_contactKey),
-                  onCompanyPressed: _scrollToTop, // Map to home for now
-                  onBlogPressed: () => _scrollToSection(_servicesKey), // Map to services
-                  onCaseStudiesPressed: () => _scrollToSection(_portfolioKey), // Map to portfolio
+                  onCompanyPressed: _scrollToTop,
+                  onBlogPressed: () => _scrollToSection(_servicesKey),
+                  onCaseStudiesPressed: () => _scrollToSection(_portfolioKey),
                   onDealerLoginPressed: () {
-                    // Handle dealer login
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Dealer Login pressed')),
+                      SnackBar(
+                        content: const Text('Dealer Login pressed'),
+                        backgroundColor: AppColors.textPrimary,
+                      ),
                     );
                   },
                   onBookDemoPressed: () {
-                    // Handle book demo
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Book Demo pressed')),
+                      SnackBar(
+                        content: const Text('Book Demo pressed'),
+                        backgroundColor: AppColors.buttonPrimary,
+                      ),
                     );
                   },
                 ),
