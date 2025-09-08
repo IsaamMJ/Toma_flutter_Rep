@@ -1,6 +1,9 @@
 [build]
-command = "bash ./install_flutter.sh && flutter build web --release"
+command = "chmod +x build.sh && ./build.sh"
 publish = "build/web"
 
 [build.environment]
-PATH = "/opt/buildhome/flutter/bin:/opt/buildhome/.pub-cache/bin:$PATH"
+FLUTTER_WEB = "true"
+
+[[plugins]]
+package = "netlify-plugin-flutter-web"
