@@ -2,6 +2,14 @@
 set -e  # Exit on any error
 
 echo "Installing Flutter..."
+
+# Remove existing flutter directory if it exists
+if [ -d "flutter" ]; then
+    echo "Removing existing Flutter directory..."
+    rm -rf flutter
+fi
+
+# Clone Flutter
 git clone https://github.com/flutter/flutter.git -b stable --depth 1
 export PATH="$PATH:`pwd`/flutter/bin"
 
