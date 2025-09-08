@@ -29,7 +29,7 @@ class _TomaFooterState extends State<TomaFooter> {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(AppConstants.spaceXXL),
+      padding: EdgeInsets.all(isMobile ? AppConstants.spaceL : AppConstants.spaceXXL),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
@@ -38,11 +38,11 @@ class _TomaFooterState extends State<TomaFooter> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
+                borderRadius: BorderRadius.circular(isMobile ? AppConstants.radiusL : AppConstants.radiusXXL),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL + AppConstants.spaceS,
-                vertical: isMobile ? AppConstants.spaceXXL : AppConstants.spaceXXL + AppConstants.spaceS,
+                horizontal: isMobile ? AppConstants.spaceL : AppConstants.spaceXXL + AppConstants.spaceS,
+                vertical: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL + AppConstants.spaceS,
               ),
               child: Column(
                 children: [
@@ -51,14 +51,14 @@ class _TomaFooterState extends State<TomaFooter> {
                   else
                     _buildDesktopLayout(context),
 
-                  SizedBox(height: AppConstants.spaceXXL),
+                  SizedBox(height: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL),
                   _buildSocialMediaSection(),
-                  SizedBox(height: AppConstants.spaceXXL),
+                  SizedBox(height: isMobile ? AppConstants.spaceL : AppConstants.spaceXXL),
 
                   Container(
                     height: 1,
                     color: Colors.grey.shade800,
-                    margin: EdgeInsets.only(bottom: AppConstants.spaceXL),
+                    margin: EdgeInsets.only(bottom: isMobile ? AppConstants.spaceL : AppConstants.spaceXL),
                   ),
 
                   _buildBottomSection(context),
@@ -86,9 +86,10 @@ class _TomaFooterState extends State<TomaFooter> {
 
   Widget _buildMobileLayout(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center, // Center everything in mobile
       children: [
         _buildLeftSection(context),
-        SizedBox(height: AppConstants.spaceXXL),
+        SizedBox(height: AppConstants.spaceXL), // Reduced spacing for mobile
         _buildRightSection(context),
       ],
     );
@@ -98,39 +99,42 @@ class _TomaFooterState extends State<TomaFooter> {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
           FooterData.logoText,
           style: AppTextStyles.heroTitle.copyWith(
-            fontSize: isMobile ? 36.0 : AppConstants.fontSizeHero,
+            fontSize: isMobile ? 28.0 : AppConstants.fontSizeHero, // Smaller on mobile
             fontWeight: FontWeight.w300,
             color: Colors.white,
             letterSpacing: -1.5,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
         ).animate().fadeIn(duration: AppConstants.animationSlow).slideY(begin: 0.3),
 
-        SizedBox(height: AppConstants.spaceM),
+        SizedBox(height: isMobile ? AppConstants.spaceS : AppConstants.spaceM),
 
         Text(
           FooterData.tagline,
           style: AppTextStyles.bodyMedium.copyWith(
-            fontSize: isMobile ? AppConstants.fontSizeS : AppConstants.fontSizeM,
+            fontSize: isMobile ? AppConstants.fontSizeXS : AppConstants.fontSizeM,
             color: Colors.grey.shade400,
             height: 1.4,
             fontWeight: FontWeight.w400,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
         ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.3),
 
-        SizedBox(height: AppConstants.spaceXL),
+        SizedBox(height: isMobile ? AppConstants.spaceL : AppConstants.spaceXL),
 
         Text(
           FooterData.signupText,
           style: AppTextStyles.bodyMedium.copyWith(
-            fontSize: isMobile ? AppConstants.fontSizeS : 15.0,
+            fontSize: isMobile ? AppConstants.fontSizeXS : 15.0,
             color: Colors.grey.shade400,
             fontWeight: FontWeight.w400,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
         ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 400.ms).slideY(begin: 0.3),
 
         SizedBox(height: AppConstants.spaceM),
@@ -141,86 +145,171 @@ class _TomaFooterState extends State<TomaFooter> {
 
   Widget _buildEmailSignupForm(bool isMobile) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: AppConstants.buttonHeight,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.shade700,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(22),
+      constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 400),
+      width: isMobile ? double.infinity : null,
+      child: isMobile ? _buildMobileEmailForm() : _buildDesktopEmailForm(),
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 600.ms).slideY(begin: 0.3);
+  }
+
+  Widget _buildMobileEmailForm() {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          height: AppConstants.buttonHeight,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.shade700,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: TextField(
+            controller: _emailController,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: Colors.white,
+              fontSize: AppConstants.fontSizeS,
+            ),
+            decoration: InputDecoration(
+              hintText: FooterData.emailPlaceholder,
+              hintStyle: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.grey.shade500,
+                fontSize: AppConstants.fontSizeS,
               ),
-              child: TextField(
-                controller: _emailController,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white,
-                  fontSize: AppConstants.fontSizeS,
-                ),
-                decoration: InputDecoration(
-                  hintText: FooterData.emailPlaceholder,
-                  hintStyle: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.grey.shade500,
-                    fontSize: AppConstants.fontSizeS,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: AppConstants.spaceL,
-                    vertical: AppConstants.spaceS,
-                  ),
-                ),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: AppConstants.spaceL,
+                vertical: AppConstants.spaceS,
               ),
             ),
           ),
-
-          SizedBox(width: AppConstants.spaceS),
-
-          MouseRegion(
+        ),
+        SizedBox(height: AppConstants.spaceM),
+        SizedBox(
+          width: double.infinity,
+          height: AppConstants.buttonHeight,
+          child: MouseRegion(
             onEnter: (_) => setState(() => _isHovered = true),
             onExit: (_) => setState(() => _isHovered = false),
-            child: AnimatedContainer(
-              duration: AppConstants.animationFast,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_emailController.text.isNotEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Signed up with ${_emailController.text}'),
-                        backgroundColor: Colors.grey.shade800,
-                      ),
-                    );
-                    _emailController.clear();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isHovered ? Colors.white : Colors.grey.shade300,
-                  foregroundColor: Colors.black,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppConstants.spaceL,
-                    vertical: AppConstants.spaceS,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-                  elevation: 0,
-                  minimumSize: Size(80, AppConstants.buttonHeight),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_emailController.text.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Signed up with ${_emailController.text}'),
+                      backgroundColor: Colors.grey.shade800,
+                    ),
+                  );
+                  _emailController.clear();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isHovered ? Colors.white : Colors.grey.shade300,
+                foregroundColor: Colors.black,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.spaceL,
+                  vertical: AppConstants.spaceS,
                 ),
-                child: Text(
-                  FooterData.submitButtonText,
-                  style: AppTextStyles.button.copyWith(
-                    fontSize: AppConstants.fontSizeS,
-                    fontWeight: FontWeight.w500,
-                  ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                FooterData.submitButtonText,
+                style: AppTextStyles.button.copyWith(
+                  fontSize: AppConstants.fontSizeS,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
                 ),
               ),
             ),
           ),
-        ],
-      ),
-    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 600.ms).slideY(begin: 0.3);
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopEmailForm() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: AppConstants.buttonHeight,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey.shade700,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: TextField(
+              controller: _emailController,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white,
+                fontSize: AppConstants.fontSizeS,
+              ),
+              decoration: InputDecoration(
+                hintText: FooterData.emailPlaceholder,
+                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                  color: Colors.grey.shade500,
+                  fontSize: AppConstants.fontSizeS,
+                ),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.spaceL,
+                  vertical: AppConstants.spaceS,
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(width: AppConstants.spaceS),
+
+        MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          child: AnimatedContainer(
+            duration: AppConstants.animationFast,
+            child: ElevatedButton(
+              onPressed: () {
+                if (_emailController.text.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Signed up with ${_emailController.text}'),
+                      backgroundColor: Colors.grey.shade800,
+                    ),
+                  );
+                  _emailController.clear();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isHovered ? Colors.white : Colors.grey.shade300,
+                foregroundColor: Colors.black,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.spaceL,
+                  vertical: AppConstants.spaceS,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                elevation: 0,
+                minimumSize: Size(80, AppConstants.buttonHeight),
+              ),
+              child: Text(
+                FooterData.submitButtonText,
+                style: AppTextStyles.button.copyWith(
+                  fontSize: AppConstants.fontSizeS,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildRightSection(BuildContext context) {
@@ -235,7 +324,7 @@ class _TomaFooterState extends State<TomaFooter> {
           final link = entry.value;
 
           return Container(
-            margin: EdgeInsets.only(bottom: AppConstants.spaceS),
+            margin: EdgeInsets.only(bottom: isMobile ? AppConstants.spaceXS : AppConstants.spaceS),
             child: InkWell(
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -248,11 +337,12 @@ class _TomaFooterState extends State<TomaFooter> {
               child: Text(
                 link,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  fontSize: 15.0,
+                  fontSize: isMobile ? AppConstants.fontSizeXS : 15.0,
                   color: Colors.grey.shade400,
                   fontWeight: FontWeight.w400,
                   height: 1.6,
                 ),
+                textAlign: isMobile ? TextAlign.center : TextAlign.right,
               ),
             ),
           ).animate().fadeIn(
@@ -265,21 +355,23 @@ class _TomaFooterState extends State<TomaFooter> {
   }
 
   Widget _buildSocialMediaSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: isMobile ? AppConstants.spaceS : AppConstants.spaceM,
       children: FooterData.socialMedia.asMap().entries.map((entry) {
         final index = entry.key;
         final social = entry.value;
 
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceS),
-          child: _buildSocialIcon(social.icon, social.label),
-        );
+        return _buildSocialIcon(social.icon, social.label);
       }).toList(),
     ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1200.ms);
   }
 
   Widget _buildSocialIcon(IconData icon, String label) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return InkWell(
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -291,8 +383,8 @@ class _TomaFooterState extends State<TomaFooter> {
       },
       borderRadius: BorderRadius.circular(AppConstants.radiusM),
       child: Container(
-        width: AppConstants.spaceXL,
-        height: AppConstants.spaceXL,
+        width: isMobile ? AppConstants.spaceL + 4 : AppConstants.spaceXL,
+        height: isMobile ? AppConstants.spaceL + 4 : AppConstants.spaceXL,
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.grey.shade700,
@@ -303,7 +395,7 @@ class _TomaFooterState extends State<TomaFooter> {
         child: Icon(
           icon,
           color: Colors.grey.shade400,
-          size: AppConstants.iconS,
+          size: isMobile ? AppConstants.iconS : AppConstants.iconS,
         ),
       ),
     );
@@ -317,6 +409,8 @@ class _TomaFooterState extends State<TomaFooter> {
         children: [
           Wrap(
             alignment: WrapAlignment.center,
+            spacing: AppConstants.spaceXS,
+            runSpacing: AppConstants.spaceXS / 2,
             children: FooterData.bottomLinks.asMap().entries.map((entry) {
               final index = entry.key;
               final link = entry.value;
@@ -336,19 +430,19 @@ class _TomaFooterState extends State<TomaFooter> {
                     child: Text(
                       link,
                       style: AppTextStyles.bodySmall.copyWith(
-                        fontSize: AppConstants.fontSizeXS + 1,
+                        fontSize: AppConstants.fontSizeXS,
                         color: Colors.grey.shade500,
                       ),
                     ),
                   ),
                   if (index < FooterData.bottomLinks.length - 1)
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: AppConstants.spaceS),
+                      margin: EdgeInsets.symmetric(horizontal: AppConstants.spaceXS),
                       child: Text(
                         '•',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: Colors.grey.shade700,
-                          fontSize: AppConstants.fontSizeXS + 1,
+                          fontSize: AppConstants.fontSizeXS,
                         ),
                       ),
                     ),
@@ -356,11 +450,11 @@ class _TomaFooterState extends State<TomaFooter> {
               );
             }).toList(),
           ),
-          SizedBox(height: AppConstants.spaceM),
+          SizedBox(height: AppConstants.spaceS),
           Text(
             FooterData.copyright,
             style: AppTextStyles.bodySmall.copyWith(
-              fontSize: AppConstants.fontSizeXS + 1,
+              fontSize: AppConstants.fontSizeXS,
               color: Colors.grey.shade600,
             ),
             textAlign: TextAlign.center,

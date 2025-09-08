@@ -55,7 +55,7 @@ class MeetEmployeeSection extends StatelessWidget {
   Widget _buildContentSection(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start, // Add this condition
       children: [
         Text(
           MeetEmployeeData.mainTitle,
@@ -65,6 +65,7 @@ class MeetEmployeeSection extends StatelessWidget {
             color: Colors.black87,
             height: 1.2,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start, // Add this for text centering
         ).animate().fadeIn(duration: AppConstants.animationSlow).slideX(begin: -0.3),
 
         SizedBox(height: AppConstants.spaceL),
@@ -76,6 +77,7 @@ class MeetEmployeeSection extends StatelessWidget {
             color: Colors.grey.shade600,
             height: 1.6,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start, // Add this for text centering
         ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideX(begin: -0.3),
 
         SizedBox(height: AppConstants.spaceXXL),
@@ -163,6 +165,7 @@ class MeetEmployeeSection extends StatelessWidget {
               style: AppTextStyles.button.copyWith(
                 fontSize: AppConstants.fontSizeM,
                 fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
             SizedBox(width: AppConstants.spaceS),

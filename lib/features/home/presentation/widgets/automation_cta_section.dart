@@ -55,7 +55,7 @@ class AutomationCTASection extends StatelessWidget {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start, // Add this condition
       children: [
         Text(
           AutomationCTAData.headline,
@@ -65,6 +65,7 @@ class AutomationCTASection extends StatelessWidget {
             fontWeight: FontWeight.w700,
             height: 1.1,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start, // Add this for text centering
         ).animate().fadeIn(duration: AppConstants.animationSlow).slideY(begin: 0.2),
 
         SizedBox(height: AppConstants.spaceL),
@@ -75,10 +76,12 @@ class AutomationCTASection extends StatelessWidget {
             color: Colors.grey.shade700,
             fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start, // Add this for text centering
         ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.2),
 
         SizedBox(height: AppConstants.spaceXXL),
 
+        // The button will now be centered due to CrossAxisAlignment.center
         SizedBox(
           height: 56,
           child: ElevatedButton.icon(
