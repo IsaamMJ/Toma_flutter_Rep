@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/text_styles.dart';
+import '../../../../core/components/nav_bar_item_button.dart';
+import '../../../../core/components/use_case_item.dart';
 import '../../../../core/utils/responsive_helper.dart';
 
 class AutomationContent extends StatefulWidget {
@@ -12,18 +14,15 @@ class AutomationContent extends StatefulWidget {
 }
 
 class _AutomationContentState extends State<AutomationContent> {
-  int selectedIndex = 1; // Schedule Appointments is highlighted
+  int? selectedIndex;
 
-  final List<Map<String, String>> useCases = [
-    {'title': 'Full-Store Receptionist', 'description': ''},
-    {
-      'title': 'Schedule Appointments 24/7',
-      'description': 'Book new service appointments and help customers reschedule or confirm existing ones—without human intervention.'
-    },
-    {'title': 'Generate Recall Service Revenue', 'description': ''},
-    {'title': 'Streamline Parts Requests', 'description': ''},
-    {'title': 'Reduce No-Shows', 'description': ''},
-    {'title': 'Build-Your-Own-Workflow', 'description': ''},
+  static const useCases = [
+    ('Full-Store Receptionist', 'Handle all customer inquiries, answer common questions about services, pricing, and policies while directing complex issues to human staff when needed.'),
+    ('Schedule Appointments 24/7', 'Book new service appointments and help customers reschedule or confirm existing ones—without human intervention.'),
+    ('Generate Recall Service Revenue', 'Automatically reach out to customers about recalls, warranty work, and maintenance reminders to drive additional service revenue.'),
+    ('Streamline Parts Requests', 'Process parts inquiries, check inventory availability, and coordinate with suppliers to ensure faster turnaround times.'),
+    ('Reduce No-Shows', 'Send automated appointment reminders, confirmations, and follow-ups to significantly reduce missed appointments and improve scheduling efficiency.'),
+    ('Build-Your-Own-Workflow', 'Create custom automation workflows tailored to your dealership\'s specific needs and processes with our intuitive workflow builder.'),
   ];
 
   @override
@@ -33,133 +32,72 @@ class _AutomationContentState extends State<AutomationContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title
-        Text(
-          'Automation That Drives Revenue',
-          style: isMobile
-              ? AppTextStyles.sectionTitleMobile
-              : AppTextStyles.sectionTitle,
-        ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2),
-
-        const SizedBox(height: 16),
-
-        // Description
-        Text(
-          'Make AI work for you by automating repetitive tasks that your dealership encounters every single day.',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
-
+        _buildHeader(isMobile),
         const SizedBox(height: 32),
-
-        // Buttons
-        Row(
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.chat_bubble_outline, size: 18),
-              label: const Text('Talk to Toma'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.buttonPrimary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ).animate().fadeIn(duration: 600.ms, delay: 400.ms),
-
-            const SizedBox(width: 16),
-
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.textPrimary,
-                side: BorderSide(color: AppColors.buttonOutline),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Get Started'),
-            ).animate().fadeIn(duration: 600.ms, delay: 500.ms),
-          ],
-        ),
-
+        _buildCTAButton(),
         const SizedBox(height: 48),
-
-        // Use Cases Label
-        Text(
-          'Use Cases',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.textMuted,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.2,
-          ),
-        ).animate().fadeIn(duration: 600.ms, delay: 600.ms),
-
-        const SizedBox(height: 24),
-
-        // Use Cases List
-        ...useCases.asMap().entries.map((entry) {
-          final index = entry.key;
-          final useCase = entry.value;
-          final isSelected = index == selectedIndex;
-
-          return _buildUseCaseItem(
-            useCase['title']!,
-            useCase['description']!,
-            isSelected,
-            index,
-          ).animate().fadeIn(
-              duration: 500.ms,
-              delay: (700 + index * 100).ms
-          );
-        }).toList(),
+        _buildUseCaseLabel(),
+        const SizedBox(height: 20),
+        ..._buildUseCases(),
       ],
     );
   }
 
-  Widget _buildUseCaseItem(String title, String description, bool isSelected, int index) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      child: InkWell(
-        onTap: () => setState(() => selectedIndex = index),
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.surface.withOpacity(0.5) : null,
-            borderRadius: BorderRadius.circular(8),
-            border: isSelected
-                ? Border.all(color: AppColors.buttonOutline.withOpacity(0.3))
-                : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
-                ),
-              ),
-              if (description.isNotEmpty && isSelected) ...[
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+  Widget _buildHeader(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Automation That Drives Revenue',
+          style: isMobile ? AppTextStyles.sectionTitleMobile : AppTextStyles.sectionTitle,
+        ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2),
+        const SizedBox(height: 16),
+        Text(
+          'Make AI work for you by automating repetitive tasks that your dealership encounters every single day.',
+          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
+      ],
     );
+  }
+
+  Widget _buildCTAButton() {
+    return PrimaryButton(
+      label: 'Talk to Toma',
+      icon: Icons.graphic_eq,
+      onPressed: () {},
+      isFullWidth: true,
+    ).animate().fadeIn(duration: 600.ms, delay: 400.ms);
+  }
+
+  Widget _buildUseCaseLabel() {
+    return Text(
+      'USE CASES',
+      style: AppTextStyles.bodySmall.copyWith(
+        color: AppColors.textMuted,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1.2,
+      ),
+    ).animate().fadeIn(duration: 600.ms, delay: 600.ms);
+  }
+
+  List<Widget> _buildUseCases() {
+    return useCases.asMap().entries.map((entry) {
+      final (index, (title, description)) = (entry.key, entry.value);
+      final isSelected = index == selectedIndex;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: UseCaseItem(
+          title: title,
+          description: description,
+          isSelected: isSelected,
+          onTap: () => setState(() => selectedIndex = isSelected ? null : index),
+        ),
+      ).animate().fadeIn(
+        duration: 500.ms,
+        delay: (700 + index * 100).ms,
+      );
+    }).toList();
   }
 }

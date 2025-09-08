@@ -17,45 +17,59 @@ class AutomationSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80),
       color: AppColors.background,
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: isMobile
-              ? Column(
-            children: [
-              const AutomationContent(),
-              const SizedBox(height: 48),
-              _buildPhoneMockup(context),
-            ],
-          )
-              : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(
-                flex: 5,
-                child: AutomationContent(),
-              ),
-              const SizedBox(width: 60),
-              Expanded(
-                flex: 4,
-                child: _buildPhoneMockup(context),
-              ),
-            ],
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPhoneMockup(BuildContext context) {
+  Widget _buildMobileLayout() {
+    return Column(
+      children: [
+        const AutomationContent(),
+        const SizedBox(height: 48),
+        _WorkflowVisualization(),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Expanded(flex: 5, child: AutomationContent()),
+        const SizedBox(width: 60),
+        Expanded(flex: 4, child: _WorkflowVisualization()),
+      ],
+    );
+  }
+}
+
+class _WorkflowVisualization extends StatelessWidget {
+  static const _steps = [
+    ('Customer Inquiry', Icons.person, 'Recall notice appointment?', 0),
+    ('AI Processing', Icons.psychology, 'Analyzing request...', 800),
+    ('Auto-Resolution', Icons.check_circle, 'Appointment rescheduled!', 1600),
+  ];
+
+  static const _metrics = [
+    ('Response Time', '< 2 sec', Icons.timer),
+    ('Success Rate', '94%', Icons.trending_up),
+    ('Available', '24/7', Icons.access_time),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 500,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.grey.shade300, width: 8),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -64,187 +78,176 @@ class AutomationSection extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
-        child: Stack(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
           children: [
-            // Background with subtle pattern
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.grey.shade50,
-                    Colors.white,
-                  ],
-                ),
-              ),
-            ),
-
-            // Status bar
-            Positioned(
-              top: 10,
-              left: 20,
-              right: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '9:41',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.signal_cellular_4_bar, size: 16, color: Colors.grey.shade700),
-                      const SizedBox(width: 4),
-                      Icon(Icons.wifi, size: 16, color: Colors.grey.shade700),
-                      const SizedBox(width: 4),
-                      Icon(Icons.battery_full, size: 16, color: Colors.grey.shade700),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // Chat header
-            Positioned(
-              top: 40,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade200),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.arrow_back, size: 20, color: Colors.grey.shade700),
-                    const SizedBox(width: 12),
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.blue.shade100,
-                      child: Icon(Icons.support_agent, size: 16, color: Colors.blue.shade700),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Toma Assistant',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ).animate().fadeIn(delay: 400.ms),
-
-            // Chat messages
-            Positioned(
-              top: 100,
-              left: 20,
-              right: 20,
+            _buildHeader(),
+            const SizedBox(height: 24),
+            Expanded(
               child: Column(
                 children: [
-                  // User message
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade500,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(18),
-                              topRight: Radius.circular(18),
-                              bottomLeft: Radius.circular(18),
-                              bottomRight: Radius.circular(4),
-                            ),
-                          ),
-                          child: Text(
-                            'Something came up, can I reschedule my appointment?',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.brown.shade300,
-                        child: Icon(Icons.person, size: 16, color: Colors.white),
-                      ),
-                    ],
-                  ).animate().fadeIn(delay: 800.ms).slideX(begin: 0.3),
-
-                  const SizedBox(height: 16),
-
-                  // Assistant response
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.grey.shade600,
-                        child: Icon(Icons.support_agent, size: 16, color: Colors.white),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              topRight: Radius.circular(18),
-                              bottomLeft: Radius.circular(18),
-                              bottomRight: Radius.circular(18),
-                            ),
-                          ),
-                          child: Text(
-                            'No problem, when can you come in?',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: Colors.grey.shade800,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ).animate().fadeIn(delay: 1200.ms).slideX(begin: -0.3),
+                  ..._buildWorkflowSteps(),
+                  const Spacer(),
+                  _buildMetrics(),
                 ],
               ),
             ),
-
-            // Decorative elements
-            Positioned(
-              bottom: 60,
-              right: 20,
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.calendar_today,
-                  color: Colors.grey.shade400,
-                  size: 24,
-                ),
-              ),
-            ).animate().fadeIn(delay: 1600.ms).scale(begin: const Offset(0.8, 0.8)),
           ],
         ),
       ),
-    ).animate().slideX(begin: 0.3, duration: 800.ms, delay: 400.ms);
+    ).animate().slideY(begin: 0.3, duration: 800.ms, delay: 400.ms);
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.green.shade50,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildPulsingDot(),
+              const SizedBox(width: 6),
+              Text(
+                'Live Demo',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.green.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        Text(
+          '347 Calls Handled Today',
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMuted),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPulsingDot() {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+    ).animate(onPlay: (controller) => controller.repeat())
+        .scale(begin: const Offset(1, 1), end: const Offset(1.3, 1.3), duration: 1000.ms)
+        .then()
+        .scale(begin: const Offset(1.3, 1.3), end: const Offset(1, 1), duration: 1000.ms);
+  }
+
+  List<Widget> _buildWorkflowSteps() {
+    final steps = <Widget>[];
+    for (int i = 0; i < _steps.length; i++) {
+      final (title, icon, description, delay) = _steps[i];
+      steps.add(_buildWorkflowStep(title, icon, description, delay));
+      if (i < _steps.length - 1) steps.add(_buildFlowLine());
+    }
+    return steps;
+  }
+
+  Widget _buildWorkflowStep(String title, IconData icon, String description, int delay) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.buttonOutline.withOpacity(0.2)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.buttonPrimary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: AppColors.buttonPrimary, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  description,
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: delay.ms).slideX(begin: 0.3);
+  }
+
+  Widget _buildFlowLine() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          const SizedBox(width: 20),
+          Container(
+            width: 2,
+            height: 20,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.buttonPrimary.withOpacity(0.5),
+                  AppColors.buttonPrimary,
+                ],
+              ),
+            ),
+          ).animate(onPlay: (controller) => controller.repeat())
+              .shimmer(duration: 2000.ms, color: AppColors.buttonPrimary.withOpacity(0.3)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetrics() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: _metrics
+          .map((metric) => _buildMetric(metric.$1, metric.$2, metric.$3))
+          .toList(),
+    );
+  }
+
+  Widget _buildMetric(String label, String value, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, color: AppColors.buttonPrimary, size: 20),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: AppTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        Text(
+          label,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.textMuted,
+            fontSize: 11,
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 2000.ms).scale(begin: const Offset(0.8, 0.8));
   }
 }
