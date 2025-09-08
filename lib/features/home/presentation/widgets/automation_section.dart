@@ -14,7 +14,9 @@ class AutomationSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 60 : 80, // Reduced mobile padding
+      ),
       color: AppColors.background,
       child: Center(
         child: ConstrainedBox(
@@ -32,7 +34,7 @@ class AutomationSection extends StatelessWidget {
     return Column(
       children: [
         const AutomationContent(),
-        const SizedBox(height: 48),
+        const SizedBox(height: 32), // Reduced spacing
         _WorkflowVisualization(),
       ],
     );
@@ -65,8 +67,14 @@ class _WorkflowVisualization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      height: 500,
+      // Remove fixed height for mobile, use flexible height
+      height: isMobile ? null : 500,
+      constraints: isMobile
+          ? const BoxConstraints(minHeight: 400) // Minimum height for mobile
+          : null,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -79,27 +87,63 @@ class _WorkflowVisualization extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(isMobile ? 16 : 24), // Reduced mobile padding
         child: Column(
+          mainAxisSize: MainAxisSize.min, // Allow column to size itself
           children: [
-            _buildHeader(),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Column(
-                children: [
-                  ..._buildWorkflowSteps(),
-                  const Spacer(),
-                  _buildMetrics(),
-                ],
-              ),
-            ),
+            _buildHeader(context),
+            SizedBox(height: isMobile ? 16 : 24), // Responsive spacing
+            ..._buildWorkflowSteps(context),
+            SizedBox(height: isMobile ? 16 : 24), // Add spacing before metrics
+            _buildMetrics(context),
           ],
         ),
       ),
     ).animate().slideY(begin: 0.3, duration: 800.ms, delay: 400.ms);
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    if (isMobile) {
+      // Stack header elements vertically on mobile
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildPulsingDot(),
+                const SizedBox(width: 6),
+                Text(
+                  'Live Demo',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '347 Calls Handled Today',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textMuted,
+              fontSize: 12, // Slightly smaller on mobile
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Desktop layout - horizontal
     return Row(
       children: [
         Container(
@@ -143,19 +187,24 @@ class _WorkflowVisualization extends StatelessWidget {
         .scale(begin: const Offset(1.3, 1.3), end: const Offset(1, 1), duration: 1000.ms);
   }
 
-  List<Widget> _buildWorkflowSteps() {
+  List<Widget> _buildWorkflowSteps(BuildContext context) {
     final steps = <Widget>[];
     for (int i = 0; i < _steps.length; i++) {
       final (title, icon, description, delay) = _steps[i];
-      steps.add(_buildWorkflowStep(title, icon, description, delay));
-      if (i < _steps.length - 1) steps.add(_buildFlowLine());
+      steps.add(_buildWorkflowStep(title, icon, description, delay, context));
+      if (i < _steps.length - 1) {
+        steps.add(_buildFlowLine());
+      }
     }
     return steps;
   }
 
-  Widget _buildWorkflowStep(String title, IconData icon, String description, int delay) {
+  Widget _buildWorkflowStep(String title, IconData icon, String description, int delay, BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: isMobile ? 12 : 0), // Add margin for mobile spacing
+      padding: EdgeInsets.all(isMobile ? 12 : 16), // Reduce mobile padding
       decoration: BoxDecoration(
         color: AppColors.surface.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
@@ -164,26 +213,40 @@ class _WorkflowVisualization extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: isMobile ? 36 : 40, // Smaller icon container on mobile
+            height: isMobile ? 36 : 40,
             decoration: BoxDecoration(
               color: AppColors.buttonPrimary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: AppColors.buttonPrimary, size: 20),
+            child: Icon(
+              icon,
+              color: AppColors.buttonPrimary,
+              size: isMobile ? 18 : 20, // Smaller icon on mobile
+            ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: isMobile ? 10 : 12), // Reduced spacing on mobile
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                  style: (isMobile ? AppTextStyles.bodySmall : AppTextStyles.bodyMedium).copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 2),
                 Text(
                   description,
-                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                    fontSize: isMobile ? 11 : 12, // Smaller text on mobile
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -195,13 +258,13 @@ class _WorkflowVisualization extends StatelessWidget {
 
   Widget _buildFlowLine() {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 6), // Reduced margin
       child: Row(
         children: [
-          const SizedBox(width: 20),
+          const SizedBox(width: 18), // Aligned with icon center
           Container(
             width: 2,
-            height: 20,
+            height: 16, // Reduced height
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -219,23 +282,45 @@ class _WorkflowVisualization extends StatelessWidget {
     );
   }
 
-  Widget _buildMetrics() {
+  Widget _buildMetrics(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    if (isMobile) {
+      // Use a more compact layout for mobile
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: _metrics
+              .map((metric) => _buildMetric(metric.$1, metric.$2, metric.$3, context))
+              .toList(),
+        ),
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: _metrics
-          .map((metric) => _buildMetric(metric.$1, metric.$2, metric.$3))
+          .map((metric) => _buildMetric(metric.$1, metric.$2, metric.$3, context))
           .toList(),
     );
   }
 
-  Widget _buildMetric(String label, String value, IconData icon) {
+  Widget _buildMetric(String label, String value, IconData icon, BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.buttonPrimary, size: 20),
-        const SizedBox(height: 4),
+        Icon(
+          icon,
+          color: AppColors.buttonPrimary,
+          size: isMobile ? 16 : 20, // Smaller icons on mobile
+        ),
+        SizedBox(height: isMobile ? 2 : 4), // Reduced spacing
         Text(
           value,
-          style: AppTextStyles.bodyMedium.copyWith(
+          style: (isMobile ? AppTextStyles.bodySmall : AppTextStyles.bodyMedium).copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
@@ -244,8 +329,11 @@ class _WorkflowVisualization extends StatelessWidget {
           label,
           style: AppTextStyles.bodySmall.copyWith(
             color: AppColors.textMuted,
-            fontSize: 11,
+            fontSize: isMobile ? 10 : 11, // Smaller text on mobile
           ),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     ).animate().fadeIn(delay: 2000.ms).scale(begin: const Offset(0.8, 0.8));

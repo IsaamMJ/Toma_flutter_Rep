@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_constants.dart';
 import '../../app/theme/text_styles.dart';
 
-// 1. Enhanced Navigation Bar Item Button
+// 1. Navigation Bar Item Button
 class NavBarItemButton extends StatefulWidget {
   final String title;
   final VoidCallback? onPressed;
@@ -34,7 +33,7 @@ class _NavBarItemButtonState extends State<NavBarItemButton> {
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: AppConstants.animationFast,
           decoration: BoxDecoration(
             color: widget.isActive
                 ? AppColors.accent.withOpacity(0.1)
@@ -46,10 +45,7 @@ class _NavBarItemButtonState extends State<NavBarItemButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: widget.onPressed != null ? () {
-                HapticFeedback.lightImpact();
-                widget.onPressed!();
-              } : null,
+              onTap: widget.onPressed,
               borderRadius: BorderRadius.circular(8),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -82,7 +78,7 @@ class _NavBarItemButtonState extends State<NavBarItemButton> {
   }
 }
 
-// 2. Enhanced Outlined Button with Icon
+// 2. Outlined Button with Icon
 class OutlinedIconButton extends StatefulWidget {
   final String label;
   final IconData icon;
@@ -104,58 +100,46 @@ class OutlinedIconButton extends StatefulWidget {
 }
 
 class _OutlinedIconButtonState extends State<OutlinedIconButton> {
-  bool _isPressed = false;
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.isFullWidth ? double.infinity : null,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: OutlinedButton.icon(
-          onPressed: widget.onPressed != null && !widget.isLoading ? () {
-            HapticFeedback.selectionClick();
-            widget.onPressed!();
-          } : null,
-          icon: widget.isLoading
-              ? SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.textPrimary),
-            ),
-          )
-              : Icon(widget.icon, size: 18),
-          label: Text(widget.label),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.textPrimary,
-            side: BorderSide(
-              color: widget.onPressed == null
-                  ? AppColors.buttonOutline.withOpacity(0.5)
-                  : AppColors.buttonOutline,
-              width: 1.5,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: widget.isFullWidth ? 16 : 12,
-            ),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            textStyle: AppTextStyles.button,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-          ).copyWith(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.hovered)) {
-                  return AppColors.textPrimary.withOpacity(0.04);
-                }
-                if (states.contains(MaterialState.pressed)) {
-                  return AppColors.textPrimary.withOpacity(0.08);
-                }
-                return null;
-              },
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedContainer(
+          duration: AppConstants.animationFast,
+          transform: Matrix4.identity()..scale(_isHovered ? 1.02 : 1.0),
+          child: OutlinedButton.icon(
+            onPressed: widget.onPressed != null && !widget.isLoading ? widget.onPressed : null,
+            icon: widget.isLoading
+                ? SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.textPrimary),
+              ),
+            )
+                : Icon(widget.icon, size: 18),
+            label: Text(widget.label),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textPrimary,
+              side: BorderSide(
+                color: widget.onPressed == null
+                    ? AppColors.buttonOutline.withOpacity(0.5)
+                    : AppColors.buttonOutline,
+                width: 1.5,
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: widget.isFullWidth ? 16 : 12,
+              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              textStyle: AppTextStyles.button,
+              elevation: 0,
             ),
           ),
         ),
@@ -164,15 +148,15 @@ class _OutlinedIconButtonState extends State<OutlinedIconButton> {
   }
 }
 
-// 3. Enhanced Primary Button
-class PrimaryButton extends StatefulWidget {
+// 3. Enhanced Primary Button (Renamed to avoid conflicts)
+class EnhancedPrimaryButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
   final bool isFullWidth;
   final bool isLoading;
 
-  const PrimaryButton({
+  const EnhancedPrimaryButton({
     super.key,
     required this.label,
     this.onPressed,
@@ -182,74 +166,47 @@ class PrimaryButton extends StatefulWidget {
   });
 
   @override
-  State<PrimaryButton> createState() => _PrimaryButtonState();
+  State<EnhancedPrimaryButton> createState() => _EnhancedPrimaryButtonState();
 }
 
-class _PrimaryButtonState extends State<PrimaryButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+class _EnhancedPrimaryButtonState extends State<EnhancedPrimaryButton> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.isFullWidth ? double.infinity : null,
-      child: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: 1.0 - (_animationController.value * 0.05),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: widget.onPressed != null && !widget.isLoading ? [
-                  BoxShadow(
-                    color: AppColors.buttonPrimary.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ] : null,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedContainer(
+          duration: AppConstants.animationFast,
+          transform: Matrix4.identity()..scale(_isHovered ? 1.02 : 1.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: widget.onPressed != null && !widget.isLoading ? [
+              BoxShadow(
+                color: AppColors.buttonPrimary.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
-              child: widget.icon != null
-                  ? ElevatedButton.icon(
-                onPressed: _getOnPressed(),
-                icon: _buildIcon(),
-                label: Text(widget.label),
-                style: _buttonStyle,
-              )
-                  : ElevatedButton(
-                onPressed: _getOnPressed(),
-                style: _buttonStyle,
-                child: _buildChild(),
-              ),
-            ),
-          );
-        },
+            ] : null,
+          ),
+          child: widget.icon != null
+              ? ElevatedButton.icon(
+            onPressed: widget.onPressed != null && !widget.isLoading ? widget.onPressed : null,
+            icon: _buildIcon(),
+            label: Text(widget.label),
+            style: _buttonStyle,
+          )
+              : ElevatedButton(
+            onPressed: widget.onPressed != null && !widget.isLoading ? widget.onPressed : null,
+            style: _buttonStyle,
+            child: _buildChild(),
+          ),
+        ),
       ),
     );
-  }
-
-  VoidCallback? _getOnPressed() {
-    if (widget.onPressed == null || widget.isLoading) return null;
-    return () {
-      _animationController.forward().then((_) => _animationController.reverse());
-      HapticFeedback.mediumImpact();
-      widget.onPressed!();
-    };
   }
 
   Widget _buildIcon() {
@@ -298,7 +255,6 @@ class _PrimaryButtonState extends State<PrimaryButton>
     ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 0,
-    shadowColor: Colors.transparent,
     textStyle: AppTextStyles.button.copyWith(fontWeight: FontWeight.w600),
   );
 }

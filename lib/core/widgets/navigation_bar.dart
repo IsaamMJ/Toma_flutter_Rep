@@ -139,7 +139,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           onPressed: widget.onDealerLoginPressed,
         ),
         const SizedBox(width: 12),
-        PrimaryButton(
+        EnhancedPrimaryButton(
           label: 'Book a Demo',
           onPressed: widget.onBookDemoPressed,
         ),
@@ -230,7 +230,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 },
               ),
               const SizedBox(height: 12),
-              PrimaryButton(
+              EnhancedPrimaryButton(
                 label: 'Book a Demo',
                 isFullWidth: true,
                 onPressed: () {

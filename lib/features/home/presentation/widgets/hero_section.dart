@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_constants.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../core/components/nav_bar_item_button.dart';
 import '../../../../core/utils/responsive_helper.dart';
-import 'dart:math' as math;
 
-class HeroSection extends StatefulWidget {
+class HeroSection extends StatelessWidget {
   final VoidCallback? onViewWorkPressed;
   final VoidCallback? onBookDemoPressed;
 
@@ -18,36 +18,6 @@ class HeroSection extends StatefulWidget {
   });
 
   @override
-  State<HeroSection> createState() => _HeroSectionState();
-}
-
-class _HeroSectionState extends State<HeroSection>
-    with TickerProviderStateMixin {
-  late AnimationController _backgroundController;
-  late AnimationController _carController;
-
-  @override
-  void initState() {
-    super.initState();
-    _backgroundController = AnimationController(
-      duration: const Duration(seconds: 8),
-      vsync: this,
-    )..repeat();
-
-    _carController = AnimationController(
-      duration: const Duration(seconds: 12),
-      vsync: this,
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _backgroundController.dispose();
-    _carController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
     final screenHeight = MediaQuery.of(context).size.height;
@@ -56,15 +26,14 @@ class _HeroSectionState extends State<HeroSection>
     return Container(
       height: heroHeight,
       width: double.infinity,
-      color: Colors.grey.shade50, // Outer background
+      color: Colors.grey.shade50,
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200), // Same as navbar
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
           child: Container(
-            margin: ResponsiveHelper.getHorizontalPadding(context), // Professional spacing
-            height: heroHeight - (isMobile ? 40 : 80), // Inner container with margin
+            margin: ResponsiveHelper.getHorizontalPadding(context),
+            height: heroHeight - (isMobile ? AppConstants.spaceXXL : AppConstants.spaceHuge),
             decoration: BoxDecoration(
-              // Fallback gradient (always visible)
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
@@ -74,7 +43,7 @@ class _HeroSectionState extends State<HeroSection>
                   Colors.grey.shade200,
                 ],
               ),
-              borderRadius: BorderRadius.circular(isMobile ? 16 : 24),
+              borderRadius: BorderRadius.circular(isMobile ? AppConstants.radiusM : AppConstants.radiusXXL),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.08),
@@ -84,22 +53,22 @@ class _HeroSectionState extends State<HeroSection>
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(isMobile ? 16 : 24),
+              borderRadius: BorderRadius.circular(isMobile ? AppConstants.radiusM : AppConstants.radiusXXL),
               child: Stack(
-                clipBehavior: Clip.hardEdge, // Ensure proper clipping
+                clipBehavior: Clip.hardEdge,
                 children: [
-                  // Background image with different positioning for mobile/desktop
+                  // Background image
                   Positioned.fill(
                     child: Transform.scale(
-                      scale: isMobile ? 1.2 : 1.0, // 1.2 = 120% size (zoom in)
+                      scale: isMobile ? 1.2 : 1.0,
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: const AssetImage('assets/images/hero_bg.jpg'),
                             fit: BoxFit.cover,
                             alignment: isMobile
-                                ? const Alignment(0.8, -0.5) // Right portion, more up
-                                : const Alignment(0.5, 0.5), // Center on desktop
+                                ? const Alignment(0.8, -0.5)
+                                : const Alignment(0.5, 0.5),
                             opacity: isMobile ? 0.5 : 1.0,
                           ),
                         ),
@@ -115,14 +84,12 @@ class _HeroSectionState extends State<HeroSection>
                         end: Alignment.centerRight,
                         colors: isMobile
                             ? [
-                          // Mobile: Less aggressive gradient since image is already at 50% opacity
                           Colors.white.withOpacity(0.8),
                           Colors.white.withOpacity(0.4),
                           Colors.white.withOpacity(0.1),
                           Colors.transparent,
                         ]
                             : [
-                          // Desktop: Stronger gradient for better text readability
                           Colors.white.withOpacity(0.95),
                           Colors.white.withOpacity(0.7),
                           Colors.white.withOpacity(0.2),
@@ -133,9 +100,9 @@ class _HeroSectionState extends State<HeroSection>
                     ),
                   ),
 
-                  // Content with proper padding inside container
+                  // Content
                   Padding(
-                    padding: EdgeInsets.all(isMobile ? 24.0 : 48.0),
+                    padding: EdgeInsets.all(isMobile ? AppConstants.spaceL : AppConstants.spaceXXL),
                     child: Row(
                       children: [
                         Expanded(
@@ -148,7 +115,7 @@ class _HeroSectionState extends State<HeroSection>
                               Text(
                                 'The AI Platform for',
                                 style: GoogleFonts.crimsonText(
-                                  fontSize: isMobile ? 32 : 48,
+                                  fontSize: isMobile ? AppConstants.fontSizeHeroMobile : AppConstants.fontSizeHero,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.grey.shade800,
                                   height: 1.1,
@@ -156,14 +123,14 @@ class _HeroSectionState extends State<HeroSection>
                                 textAlign: isMobile ? TextAlign.center : TextAlign.left,
                               )
                                   .animate()
-                                  .fadeIn(duration: 800.ms, delay: 200.ms)
+                                  .fadeIn(duration: AppConstants.animationSlow, delay: 200.ms)
                                   .slideX(begin: -0.3, end: 0),
 
                               // Bold text
                               Text(
                                 'Automotive',
                                 style: GoogleFonts.crimsonText(
-                                  fontSize: isMobile ? 32 : 48,
+                                  fontSize: isMobile ? AppConstants.fontSizeHeroMobile : AppConstants.fontSizeHero,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.black,
                                   height: 1.1,
@@ -171,10 +138,10 @@ class _HeroSectionState extends State<HeroSection>
                                 textAlign: isMobile ? TextAlign.center : TextAlign.left,
                               )
                                   .animate()
-                                  .fadeIn(duration: 800.ms, delay: 400.ms)
+                                  .fadeIn(duration: AppConstants.animationSlow, delay: 400.ms)
                                   .slideX(begin: -0.3, end: 0),
 
-                              SizedBox(height: isMobile ? 20 : 32),
+                              SizedBox(height: isMobile ? AppConstants.spaceL : AppConstants.spaceXL),
 
                               // Subtitle
                               Container(
@@ -184,7 +151,7 @@ class _HeroSectionState extends State<HeroSection>
                                 child: Text(
                                   'Toma builds personalized AI agents that automate customer communications and operational tasks for automotive dealerships.',
                                   style: GoogleFonts.libreBaskerville(
-                                    fontSize: isMobile ? 16 : 18,
+                                    fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.grey.shade600,
                                     height: 1.5,
@@ -192,27 +159,27 @@ class _HeroSectionState extends State<HeroSection>
                                   textAlign: isMobile ? TextAlign.center : TextAlign.left,
                                 )
                                     .animate()
-                                    .fadeIn(duration: 800.ms, delay: 600.ms)
+                                    .fadeIn(duration: AppConstants.animationSlow, delay: 600.ms)
                                     .slideX(begin: -0.2, end: 0),
                               ),
 
-                              SizedBox(height: isMobile ? 32 : 48),
+                              SizedBox(height: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL),
 
                               // CTA Buttons
                               if (isMobile)
                                 Column(
                                   children: [
-                                    PrimaryButton(
+                                    EnhancedPrimaryButton(
                                       label: 'Talk to Toma',
-                                      icon: Icons.graphic_eq, // Sound wave icon like in your image
-                                      onPressed: widget.onViewWorkPressed,
+                                      icon: Icons.graphic_eq,
+                                      onPressed: onViewWorkPressed,
                                       isFullWidth: true,
                                     ),
-                                    const SizedBox(height: 16),
+                                    SizedBox(height: AppConstants.spaceM),
                                     OutlinedIconButton(
                                       label: 'Book a Demo',
                                       icon: Icons.arrow_forward,
-                                      onPressed: widget.onBookDemoPressed,
+                                      onPressed: onBookDemoPressed,
                                       isFullWidth: true,
                                     ),
                                   ],
@@ -220,22 +187,22 @@ class _HeroSectionState extends State<HeroSection>
                               else
                                 Row(
                                   children: [
-                                    PrimaryButton(
+                                    EnhancedPrimaryButton(
                                       label: 'Talk to Toma',
-                                      icon: Icons.graphic_eq, // Sound wave icon like in your image
-                                      onPressed: widget.onViewWorkPressed,
+                                      icon: Icons.graphic_eq,
+                                      onPressed: onViewWorkPressed,
                                     )
                                         .animate()
-                                        .fadeIn(duration: 800.ms, delay: 1000.ms)
+                                        .fadeIn(duration: AppConstants.animationSlow, delay: 1000.ms)
                                         .scale(begin: const Offset(0.8, 0.8)),
-                                    const SizedBox(width: 20),
+                                    SizedBox(width: AppConstants.spaceL),
                                     OutlinedIconButton(
                                       label: 'Book a Demo',
                                       icon: Icons.arrow_forward,
-                                      onPressed: widget.onBookDemoPressed,
+                                      onPressed: onBookDemoPressed,
                                     )
                                         .animate()
-                                        .fadeIn(duration: 800.ms, delay: 1200.ms)
+                                        .fadeIn(duration: AppConstants.animationSlow, delay: 1200.ms)
                                         .scale(begin: const Offset(0.8, 0.8)),
                                   ],
                                 ),
@@ -243,21 +210,21 @@ class _HeroSectionState extends State<HeroSection>
                           ),
                         ),
                         if (!isMobile)
-                          Expanded(
+                          const Expanded(
                             flex: 4,
-                            child: Container(), // Space for background image content
+                            child: SizedBox(),
                           ),
                       ],
                     ),
                   ),
 
-                  // Backed by badge (bottom right, inside container)
+                  // Backed by badge
                   Positioned(
-                    bottom: isMobile ? 20 : 30,
-                    right: isMobile ? 20 : 30,
+                    bottom: isMobile ? AppConstants.spaceL : AppConstants.spaceXL,
+                    right: isMobile ? AppConstants.spaceL : AppConstants.spaceXL,
                     child: _buildBackedByBadge()
                         .animate()
-                        .fadeIn(duration: 800.ms, delay: 1800.ms),
+                        .fadeIn(duration: AppConstants.animationSlow, delay: 1800.ms),
                   ),
                 ],
               ),
@@ -270,10 +237,13 @@ class _HeroSectionState extends State<HeroSection>
 
   Widget _buildBackedByBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppConstants.spaceM,
+        vertical: AppConstants.spaceS,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey.shade700,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -289,11 +259,14 @@ class _HeroSectionState extends State<HeroSection>
             'Backed by: ',
             style: AppTextStyles.bodySmall.copyWith(
               color: Colors.white70,
-              fontSize: 12,
+              fontSize: AppConstants.fontSizeXS,
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppConstants.spaceS - 2,
+              vertical: 2,
+            ),
             decoration: BoxDecoration(
               color: Colors.orange.shade600,
               borderRadius: BorderRadius.circular(4),
@@ -307,12 +280,12 @@ class _HeroSectionState extends State<HeroSection>
               ),
             ),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: AppConstants.spaceXS),
           Text(
-            'Combinator Ã— alpz',
+            'Y Combinator & alpz',
             style: AppTextStyles.bodySmall.copyWith(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: AppConstants.fontSizeXS,
             ),
           ),
         ],

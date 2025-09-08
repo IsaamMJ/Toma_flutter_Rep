@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_constants.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../data/datasources/automation_cta_data.dart';
 
 class AutomationCTASection extends StatelessWidget {
   const AutomationCTASection({super.key});
@@ -11,11 +14,11 @@ class AutomationCTASection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      color: Colors.grey.shade50, // Light gray background
+      padding: EdgeInsets.symmetric(vertical: AppConstants.sectionPaddingVertical),
+      color: Colors.grey.shade50,
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
           child: Padding(
             padding: ResponsiveHelper.getHorizontalPadding(context),
             child: ResponsiveHelper.isMobile(context)
@@ -31,7 +34,7 @@ class AutomationCTASection extends StatelessWidget {
     return Column(
       children: [
         _buildContentSection(context),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildImageSection(context),
       ],
     );
@@ -40,104 +43,96 @@ class AutomationCTASection extends StatelessWidget {
   Widget _buildDesktopLayout(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 5,
-          child: _buildContentSection(context),
-        ),
-        const SizedBox(width: 80),
-        Expanded(
-          flex: 6,
-          child: _buildImageSection(context),
-        ),
+        Expanded(flex: 5, child: _buildContentSection(context)),
+        SizedBox(width: AppConstants.spaceHuge),
+        Expanded(flex: 6, child: _buildImageSection(context)),
       ],
     );
   }
 
   Widget _buildContentSection(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Main heading
         Text(
-          'What will you automate?',
-          style: TextStyle(
+          AutomationCTAData.headline,
+          style: GoogleFonts.crimsonText(
             color: Colors.black,
-            fontSize: ResponsiveHelper.isMobile(context) ? 32 : 48,
+            fontSize: isMobile ? AppConstants.fontSizeHeroMobile : AppConstants.fontSizeHero,
             fontWeight: FontWeight.w700,
             height: 1.1,
           ),
-        ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2),
+        ).animate().fadeIn(duration: AppConstants.animationSlow).slideY(begin: 0.2),
 
-        const SizedBox(height: 24),
+        SizedBox(height: AppConstants.spaceL),
 
-        // Description text
         Text(
-          'Schedule a demo with Toma to learn more about the revenue you can capture and expenses you can reduce with automation & AI.',
-          style: TextStyle(
+          AutomationCTAData.description,
+          style: AppTextStyles.bodyLarge.copyWith(
             color: Colors.grey.shade700,
-            fontSize: ResponsiveHelper.isMobile(context) ? 16 : 18,
-            height: 1.5,
+            fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
           ),
-        ).animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.2),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.2),
 
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
 
-        // CTA Button
-        Container(
+        SizedBox(
           height: 56,
           child: ElevatedButton.icon(
             onPressed: () {},
             icon: Icon(
               Icons.mic,
-              size: 20,
+              size: AppConstants.iconL,
               color: Colors.white,
             ),
             label: Text(
-              'Talk to Toma',
-              style: TextStyle(
+              AutomationCTAData.buttonText,
+              style: AppTextStyles.button.copyWith(
                 color: Colors.white,
-                fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.buttonPrimary,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+              padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceXL),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(28),
               ),
               elevation: 0,
             ),
           ),
-        ).animate().fadeIn(duration: 600.ms, delay: 400.ms).scale(begin: const Offset(0.9, 0.9)),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 400.ms).scale(begin: const Offset(0.9, 0.9)),
       ],
     );
   }
 
   Widget _buildImageSection(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      height: ResponsiveHelper.isMobile(context) ? 300 : 400,
+      height: isMobile ? 300 : 400,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppColors.shadow.withOpacity(0.1),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         child: Stack(
           children: [
-            // Background pattern/texture (optional - can be removed if not needed)
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppConstants.radiusL),
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -153,17 +148,15 @@ class AutomationCTASection extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Main CTA Image
             Positioned.fill(
               child: Image.asset(
-                'assets/images/cta_image.png',
+                AutomationCTAData.ctaImage,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(AppConstants.radiusL),
                     ),
                     child: Center(
                       child: Column(
@@ -171,15 +164,14 @@ class AutomationCTASection extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.image_not_supported_outlined,
-                            size: 48,
+                            size: AppConstants.iconXXL,
                             color: Colors.grey.shade400,
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: AppConstants.spaceS),
                           Text(
                             'Image not found',
-                            style: TextStyle(
+                            style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.grey.shade500,
-                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -192,11 +184,10 @@ class AutomationCTASection extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms, delay: 300.ms).slideX(begin: 0.1);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 300.ms).slideX(begin: 0.1);
   }
 }
 
-// Custom painter for the wave pattern background
 class WavePatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -207,7 +198,6 @@ class WavePatternPainter extends CustomPainter {
 
     final path = Path();
 
-    // Create subtle wave lines
     for (int i = 0; i < 8; i++) {
       final y = (size.height / 8) * i;
       path.moveTo(0, y);

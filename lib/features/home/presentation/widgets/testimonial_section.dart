@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_constants.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../data/datasources/testimonial_data.dart';
 
 class TestimonialSection extends StatefulWidget {
   const TestimonialSection({super.key});
@@ -13,14 +16,13 @@ class TestimonialSection extends StatefulWidget {
 }
 
 class _TestimonialSectionState extends State<TestimonialSection> {
-  static const String videoUrl = 'https://www.youtube.com/watch?v=1-BBlH2hbQg';
   bool _isVideoHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: AppConstants.sectionPaddingVertical),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -30,23 +32,28 @@ class _TestimonialSectionState extends State<TestimonialSection> {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Container(
-            padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? 32 : 48),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0A0A0A),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 32,
-                  offset: const Offset(0, 16),
-                ),
-              ],
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Container(
+              padding: EdgeInsets.all(ResponsiveHelper.isMobile(context)
+                  ? AppConstants.spaceL  // Reduced from spaceXL
+                  : AppConstants.spaceXXL),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0A0A0A),
+                borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow.withOpacity(0.1),
+                    blurRadius: 32,
+                    offset: const Offset(0, 16),
+                  ),
+                ],
+              ),
+              child: ResponsiveHelper.isMobile(context)
+                  ? _buildMobileLayout()
+                  : _buildDesktopLayout(),
             ),
-            child: ResponsiveHelper.isMobile(context)
-                ? _buildMobileLayout()
-                : _buildDesktopLayout(),
           ),
         ),
       ),
@@ -57,11 +64,11 @@ class _TestimonialSectionState extends State<TestimonialSection> {
     return Column(
       children: [
         _buildVideoSection(),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXL), // Reduced from spaceXXL
         _buildContentSection(),
-        const SizedBox(height: 48),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildCarLogos(),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildActionButtons(),
       ],
     );
@@ -74,29 +81,31 @@ class _TestimonialSectionState extends State<TestimonialSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(flex: 5, child: _buildVideoSection()),
-            const SizedBox(width: 64),
+            SizedBox(width: AppConstants.spaceXXXL),
             Expanded(flex: 6, child: _buildContentSection()),
           ],
         ),
-        const SizedBox(height: 64),
+        SizedBox(height: AppConstants.spaceXXXL),
         _buildCarLogos(),
-        const SizedBox(height: 48),
+        SizedBox(height: AppConstants.spaceXL),
         _buildActionButtons(),
       ],
     );
   }
 
   Widget _buildVideoSection() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isVideoHovered = true),
       onExit: (_) => setState(() => _isVideoHovered = false),
       child: GestureDetector(
         onTap: _launchVideo,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: 300,
+          duration: AppConstants.animationMedium,
+          height: isMobile ? 220 : 300, // Reduced mobile height
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppConstants.radiusL),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withOpacity(_isVideoHovered ? 0.2 : 0.1),
@@ -114,16 +123,15 @@ class _TestimonialSectionState extends State<TestimonialSection> {
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.95, 0.95));
+    ).animate().fadeIn(duration: AppConstants.animationSlow).scale(begin: const Offset(0.95, 0.95));
   }
 
   Widget _buildVideoBackground() {
     return Positioned.fill(
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         child: Stack(
           children: [
-            // Background gradient overlay
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -136,9 +144,8 @@ class _TestimonialSectionState extends State<TestimonialSection> {
                 ),
               ),
             ),
-            // Full width image with proper alignment
             Image.asset(
-              'assets/images/chadwick.png',
+              TestimonialData.videoThumbnail,
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -154,51 +161,59 @@ class _TestimonialSectionState extends State<TestimonialSection> {
   Widget _buildPersonPlaceholder() {
     return Center(
       child: Container(
-        width: 120,
-        height: 120,
+        width: 80, // Reduced size for mobile
+        height: 80,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
             colors: [Colors.grey.shade700, Colors.grey.shade800],
           ),
         ),
-        child: Icon(Icons.person, size: 60, color: Colors.grey.shade500),
+        child: Icon(
+            Icons.person,
+            size: ResponsiveHelper.isMobile(context) ? AppConstants.iconXL : AppConstants.iconXXL,
+            color: Colors.grey.shade500
+        ),
       ),
     );
   }
 
   Widget _buildVideoOverlay() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Positioned(
-      bottom: 20,
-      left: 20,
-      right: 20,
+      bottom: AppConstants.spaceM, // Reduced spacing
+      left: AppConstants.spaceM,
+      right: AppConstants.spaceM,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(isMobile ? AppConstants.spaceM : AppConstants.spaceL),
         decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.85),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppConstants.radiusM),
           border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Chadwick Martin',
-              style: TextStyle(
+            Text(
+              TestimonialData.testimonialName,
+              style: (isMobile ? AppTextStyles.bodyMedium : AppTextStyles.bodyLarge).copyWith(
                 color: Colors.white,
-                fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: AppConstants.spaceXS),
             Text(
-              'President, Martin Management Group',
-              style: TextStyle(
+              TestimonialData.testimonialTitle,
+              style: (isMobile ? AppTextStyles.bodySmall : AppTextStyles.bodyMedium).copyWith(
                 color: Colors.grey.shade300,
-                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -207,163 +222,171 @@ class _TestimonialSectionState extends State<TestimonialSection> {
   }
 
   Widget _buildPlayButton() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+    final buttonSize = isMobile ? AppConstants.spaceXXL : AppConstants.spaceXXXL;
+
     return Positioned(
-      bottom: 20,
-      right: 20,
+      top: AppConstants.spaceM, // Moved to top instead of bottom
+      right: AppConstants.spaceM,
       child: AnimatedScale(
         scale: _isVideoHovered ? 1.1 : 1.0,
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.animationMedium,
         child: Container(
-          width: 64,
-          height: 64,
+          width: buttonSize,
+          height: buttonSize,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.9),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: AppColors.shadow.withOpacity(0.2),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
             ],
           ),
-          child: Icon(Icons.play_arrow, color: Colors.black.withOpacity(0.8), size: 32),
+          child: Icon(
+            Icons.play_arrow,
+            color: Colors.black.withOpacity(0.8),
+            size: isMobile ? AppConstants.iconL : AppConstants.iconXL,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildContentSection() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Learn how Toma is generating more service revenue across all their locations around the country.',
-          style: TextStyle(
+          TestimonialData.mainHeadline,
+          style: GoogleFonts.crimsonText(
             color: Colors.white,
-            fontSize: ResponsiveHelper.isMobile(context) ? 32 : 42,
+            fontSize: isMobile ? 24.0 : 36.0, // Reduced mobile font size
             fontWeight: FontWeight.w800,
-            height: 1.1,
+            height: 1.2, // Increased line height for better spacing
             letterSpacing: -0.5,
           ),
-        ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.3),
 
-        const SizedBox(height: 40),
+        SizedBox(height: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL),
 
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppConstants.spaceM,
+            vertical: AppConstants.spaceS,
+          ),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppConstants.radiusL),
           ),
           child: Text(
-            'Results in 90 Days',
-            style: TextStyle(
+            TestimonialData.resultsBadge,
+            style: AppTextStyles.bodySmall.copyWith(
               color: Colors.grey.shade300,
-              fontSize: 14,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
           ),
-        ).animate().fadeIn(duration: 600.ms, delay: 400.ms),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 400.ms),
 
-        const SizedBox(height: 32),
-
+        SizedBox(height: AppConstants.spaceXL),
         _buildStats(),
       ],
     );
   }
 
   Widget _buildStats() {
-    final stats = [
-      {'number': '9K+', 'label': 'Appointments\nBooked', 'color': const Color(0xFF10B981)},
-      {'number': '\$2M+', 'label': 'Revenue\nGenerated', 'color': const Color(0xFF8B5CF6)},
-      {'number': '22K+', 'label': 'Calls\nAutomated', 'color': const Color(0xFF06B6D4)},
-    ];
+    final isMobile = ResponsiveHelper.isMobile(context);
 
-    return ResponsiveHelper.isMobile(context)
-        ? Column(children: _buildStatItems(stats))
-        : Row(children: _buildStatItems(stats));
+    if (isMobile) {
+      return Column(
+        children: _buildStatItems(),
+      );
+    } else {
+      return Row(
+        children: _buildStatItems(),
+      );
+    }
   }
 
-  List<Widget> _buildStatItems(List<Map<String, dynamic>> stats) {
-    return stats.asMap().entries.map((entry) {
+  List<Widget> _buildStatItems() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    return TestimonialData.stats.asMap().entries.map((entry) {
       final index = entry.key;
       final stat = entry.value;
-      final isMobile = ResponsiveHelper.isMobile(context);
 
-      return Expanded(
-        child: Container(
-          margin: EdgeInsets.only(
-            right: isMobile ? 0 : (index < 2 ? 32 : 0),
-            bottom: isMobile ? 32 : 0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      Widget statWidget = Container(
+        margin: EdgeInsets.only(
+          right: !isMobile && index < TestimonialData.stats.length - 1 ? AppConstants.spaceXL : 0,
+          bottom: isMobile && index < TestimonialData.stats.length - 1 ? AppConstants.spaceL : 0,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 4,
+              height: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL,
+              decoration: BoxDecoration(
+                color: stat.color,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            SizedBox(width: AppConstants.spaceM),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 4,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: stat['color'],
-                      borderRadius: BorderRadius.circular(2),
+                  Text(
+                    stat.number,
+                    style: AppTextStyles.heroTitle.copyWith(
+                      color: Colors.white,
+                      fontSize: isMobile ? 28.0 : 40.0, // Reduced mobile font size
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                      height: 1.1,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          stat['number']!,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: isMobile ? 36 : 44,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1,
-                          ),
-                        ),
-                        Text(
-                          stat['label']!,
-                          style: TextStyle(
-                            color: Colors.grey.shade400,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
+                  SizedBox(height: AppConstants.spaceXS),
+                  Text(
+                    stat.label,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Colors.grey.shade400,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ).animate().fadeIn(
-        duration: 700.ms,
+        duration: AppConstants.animationSlow,
         delay: (600 + index * 150).ms,
       ).slideX(begin: -0.2);
+
+      return isMobile ? statWidget : Expanded(child: statWidget);
     }).toList();
   }
 
   Widget _buildCarLogos() {
-    final brands = ['subaru', 'nissan', 'toyota', 'hyundai', 'genesis', 'dodge', 'audi', 'kia', 'honda'];
-
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(AppConstants.spaceL),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppConstants.radiusM),
         border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Wrap(
         alignment: WrapAlignment.center,
-        spacing: ResponsiveHelper.isMobile(context) ? 24 : 48,
-        runSpacing: 24,
-        children: brands.asMap().entries.map((entry) {
+        spacing: ResponsiveHelper.isMobile(context) ? AppConstants.spaceL : AppConstants.spaceXXL,
+        runSpacing: AppConstants.spaceL,
+        children: TestimonialData.carBrands.asMap().entries.map((entry) {
           final index = entry.key;
           final brand = entry.value;
 
@@ -371,30 +394,33 @@ class _TestimonialSectionState extends State<TestimonialSection> {
             height: 40,
             constraints: const BoxConstraints(minWidth: 60),
             child: Image.asset(
-              'assets/images/brands/$brand.png',
+              brand.assetPath,
               height: 32,
               fit: BoxFit.contain,
               color: Colors.white.withOpacity(0.7),
-              errorBuilder: (_, __, ___) => _buildBrandFallback(brand),
+              errorBuilder: (_, __, ___) => _buildBrandFallback(brand.name),
             ),
           ).animate().fadeIn(duration: 400.ms, delay: (1200 + index * 100).ms);
         }).toList(),
       ),
-    ).animate().fadeIn(duration: 600.ms, delay: 1000.ms);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1000.ms);
   }
 
   Widget _buildBrandFallback(String brand) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppConstants.spaceS,
+        vertical: AppConstants.spaceS,
+      ),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade600),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppConstants.spaceXS),
       ),
       child: Text(
         brand.toUpperCase(),
-        style: TextStyle(
+        style: AppTextStyles.bodySmall.copyWith(
           color: Colors.grey.shade500,
-          fontSize: 10,
+          fontSize: AppConstants.fontSizeXS,
           fontWeight: FontWeight.w600,
           letterSpacing: 1,
         ),
@@ -403,64 +429,83 @@ class _TestimonialSectionState extends State<TestimonialSection> {
   }
 
   Widget _buildActionButtons() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    if (isMobile) {
+      return Column(
+        children: [
+          _buildPrimaryButton(),
+          SizedBox(height: AppConstants.spaceM),
+          _buildSecondaryButton(),
+        ],
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildPrimaryButton(),
-        const SizedBox(width: 24),
+        SizedBox(width: AppConstants.spaceL),
         _buildSecondaryButton(),
       ],
     );
   }
 
   Widget _buildPrimaryButton() {
-    return Container(
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    return SizedBox(
       height: 52,
+      width: isMobile ? double.infinity : null,
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceXL),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
           elevation: 0,
         ),
-        child: const Text(
+        child: Text(
           'Read Case Study',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+          style: AppTextStyles.button.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms, delay: 1800.ms).slideY(begin: 0.5);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1800.ms).slideY(begin: 0.5);
   }
 
   Widget _buildSecondaryButton() {
-    return Container(
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    return SizedBox(
       height: 52,
+      width: isMobile ? double.infinity : null,
       child: TextButton.icon(
         onPressed: () {},
-        icon: const Icon(Icons.arrow_forward, size: 18, color: Colors.white),
-        label: const Text(
+        icon: Icon(Icons.arrow_forward, size: AppConstants.iconM, color: Colors.white),
+        label: Text(
           'See All Studies',
-          style: TextStyle(
+          style: AppTextStyles.button.copyWith(
             color: Colors.white,
-            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),
         style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceL),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(26),
             side: BorderSide(color: Colors.white.withOpacity(0.2)),
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms, delay: 1900.ms).slideY(begin: 0.5);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1900.ms).slideY(begin: 0.5);
   }
 
   Future<void> _launchVideo() async {
     try {
-      final uri = Uri.parse(videoUrl);
+      final uri = Uri.parse(TestimonialData.videoUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
