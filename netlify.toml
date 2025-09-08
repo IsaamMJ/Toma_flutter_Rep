@@ -4,6 +4,9 @@ publish = "build/web"
 
 [build.environment]
 FLUTTER_WEB = "true"
+NODE_VERSION = "18"
 
-[[plugins]]
-package = "netlify-plugin-flutter-web"
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
