@@ -14,7 +14,15 @@ class ClientsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: AppConstants.sectionPaddingVertical),
+      padding: EdgeInsets.only(
+        top: ResponsiveHelper.getResponsiveValue(
+          context: context,
+          mobile: AppConstants.spaceL,
+          tablet: AppConstants.spaceXL,
+          desktop: AppConstants.spaceXXL,
+        ),
+        bottom: AppConstants.sectionPaddingVertical,
+      ),
       color: AppColors.surface,
       child: Center(
         child: ConstrainedBox(

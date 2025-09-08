@@ -17,13 +17,6 @@ class AutomationData {
     'Streamline Parts Requests',
     'Process parts inquiries, check inventory availability, and coordinate with suppliers to ensure faster turnaround times.'
     ),
-    (
-    'Reduce No-Shows',
-    'Send automated appointment reminders, confirmations, and follow-ups to significantly reduce missed appointments and improve scheduling efficiency.'
-    ),
-    (
-    'Build-Your-Own-Workflow',
-    'Create custom automation workflows tailored to your dealership\'s specific needs and processes with our intuitive workflow builder.'
-    ),
+    
   ];
 }

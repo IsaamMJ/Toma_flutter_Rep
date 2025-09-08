@@ -15,7 +15,10 @@ class HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    final heroHeight = screenHeight > 600 ? screenHeight * 0.9 : 650.0;
+    // Reduced mobile hero height - changed multiplier from 0.9 to 0.75 and min height from 650 to 550
+    final heroHeight = screenHeight > 600
+        ? (isMobile ? screenHeight * 0.75 : screenHeight * 0.9)
+        : (isMobile ? 550.0 : 650.0);
 
     return Container(
       height: heroHeight,
@@ -103,7 +106,7 @@ class HeroSection extends StatelessWidget {
                           flex: isMobile ? 1 : 5,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
                               // Main heading
                               Text(
@@ -212,11 +215,18 @@ class HeroSection extends StatelessWidget {
                     ),
                   ),
 
-                  // Backed by badge
+                  // Backed by badge - now centered on mobile, right-aligned on desktop
                   Positioned(
                     bottom: isMobile ? AppConstants.spaceL : AppConstants.spaceXL,
-                    right: isMobile ? AppConstants.spaceL : AppConstants.spaceXL,
-                    child: _buildBackedByBadge()
+                    left: isMobile ? 0 : null,
+                    right: isMobile ? 0 : AppConstants.spaceXL,
+                    child: isMobile
+                        ? Center(
+                      child: _buildBackedByBadge()
+                          .animate()
+                          .fadeIn(duration: AppConstants.animationSlow, delay: 1800.ms),
+                    )
+                        : _buildBackedByBadge()
                         .animate()
                         .fadeIn(duration: AppConstants.animationSlow, delay: 1800.ms),
                   ),
