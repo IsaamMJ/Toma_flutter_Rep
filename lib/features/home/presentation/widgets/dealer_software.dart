@@ -15,31 +15,36 @@ class IntegrationSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 60),
       color: Colors.grey.shade50, // Light background
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: Column(
-            children: [
-              // Header text
-              Text(
-                'Integrates with Your Dealership Software',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: ResponsiveHelper.isMobile(context) ? 16 : 18,
-                  fontWeight: FontWeight.w500,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Column(
+              children: [
+                // Header text
+                Text(
+                  'Integrates with Your Dealership Software',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: ResponsiveHelper.isMobile(context) ? 16 : 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn(duration: 600.ms),
+
+                const SizedBox(height: 40),
+
+                // Logo grid using LogoCard components
+                LogoGrid(
+                  logoRows: _getIntegrationData(),
+                  verticalSpacing: 24,
+                  horizontalSpacing: 16,
+                  baseAnimationDelay: 700, // Start after header animation
+                  rowAnimationOffset: 150,
+                  cardAnimationOffset: 80,
                 ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms),
-
-              const SizedBox(height: 40),
-
-              // Logo grid using shared components
-              LogoGrid(
-                logoRows: _getIntegrationData(),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
