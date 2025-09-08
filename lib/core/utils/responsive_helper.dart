@@ -12,7 +12,7 @@ class ResponsiveHelper {
   }
 
   static bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width >= AppConstants.tabletWidth; // FIXED: Changed from desktopWidth to tabletWidth
+    return MediaQuery.of(context).size.width >= AppConstants.tabletWidth; // REVERTED: Back to original tabletWidth
   }
 
   static double getMaxWidth(BuildContext context) {
@@ -55,5 +55,25 @@ class ResponsiveHelper {
       return baseStyle.copyWith(fontSize: baseStyle.fontSize! * mobileScale);
     }
     return baseStyle;
+  }
+
+  // NEW: Get responsive logo card width
+  static double? getLogoCardWidth(BuildContext context) {
+    if (isMobile(context)) {
+      return (MediaQuery.of(context).size.width - 80) / 3; // 3 per row with padding (CHANGED from 2 to 3)
+    } else if (isTablet(context)) {
+      return (MediaQuery.of(context).size.width - 120) / 3; // 3 per row with padding
+    }
+    return null; // Desktop uses Expanded in Row
+  }
+
+  // NEW: Get responsive logo card height (REDUCED for compact layout)
+  static double getLogoCardHeight(BuildContext context) {
+    return getResponsiveValue(
+      context: context,
+      mobile: 45,    // Reduced from 60
+      tablet: 55,    // Reduced from 70
+      desktop: 80,   // Keep desktop same
+    );
   }
 }

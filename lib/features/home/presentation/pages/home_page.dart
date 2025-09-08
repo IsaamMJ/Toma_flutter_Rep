@@ -85,13 +85,8 @@ class _HomePageState extends State<HomePage> {
                       onViewWorkPressed: () => _scrollToSection(_portfolioKey),
                     ),
 
-                    // Section spacing helper
-                    _buildSectionSpacing(context),
-
                     // Clients Section
                     const ClientsSection(),
-
-                    _buildSectionSpacing(context),
 
                     // Automation Section
                     AutomationSection(key: _automationKey),
@@ -173,13 +168,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Helper method for consistent section spacing
+  // Helper method for consistent section spacing - REDUCED for compact layout
   Widget _buildSectionSpacing(BuildContext context) {
     return SizedBox(
       height: ResponsiveHelper.getResponsiveValue(
         context: context,
-        mobile: 40.0,
-        tablet: 60.0,
-        desktop: 80.0,
+        mobile: 24.0,   // Reduced from 40px (40% less)
+        tablet: 32.0,   // Reduced from 60px (47% less)
+        desktop: 10.0,  // Reduced from 80px (40% less)
       ),
     );
   }
