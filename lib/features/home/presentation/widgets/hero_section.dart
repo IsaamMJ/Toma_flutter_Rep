@@ -56,17 +56,20 @@ class HeroSection extends StatelessWidget {
                 children: [
                   // Background image
                   Positioned.fill(
-                    child: Transform.scale(
-                      scale: isMobile ? 1.2 : 1.0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: const AssetImage('assets/images/hero_bg.jpg'),
-                            fit: BoxFit.cover,
-                            alignment: isMobile
-                                ? const Alignment(0.8, -0.5)
-                                : const Alignment(0.5, 0.5),
-                            opacity: isMobile ? 0.5 : 1.0,
+                    child: Transform.translate(
+                      offset: isMobile ? const Offset(0, -70) : Offset.zero, // Move up by 50 pixels
+                      child: Transform.scale(
+                        scale: isMobile ? 1.2 : 1.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: const AssetImage('assets/images/hero_bg.jpg'),
+                              fit: BoxFit.cover,
+                              alignment: isMobile
+                                  ? const Alignment(0.8, 0.0) // Reset to center vertically
+                                  : const Alignment(0.5, 0.5),
+                              opacity: isMobile ? 0.5 : 1.0,
+                            ),
                           ),
                         ),
                       ),
