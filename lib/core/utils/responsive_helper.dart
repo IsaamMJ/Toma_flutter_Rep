@@ -12,7 +12,7 @@ class ResponsiveHelper {
   }
 
   static bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width >= AppConstants.tabletWidth;
+    return MediaQuery.of(context).size.width >= AppConstants.tabletWidth; // FIXED: Changed from desktopWidth to tabletWidth
   }
 
   static double getMaxWidth(BuildContext context) {
@@ -31,5 +31,29 @@ class ResponsiveHelper {
     } else {
       return const EdgeInsets.symmetric(horizontal: AppConstants.paddingXL);
     }
+  }
+
+  // Responsive spacing helper
+  static double getResponsiveValue({
+    required BuildContext context,
+    required double mobile,
+    required double tablet,
+    required double desktop,
+  }) {
+    if (isMobile(context)) return mobile;
+    if (isTablet(context)) return tablet;
+    return desktop;
+  }
+
+  // Quick responsive text style getter
+  static TextStyle getResponsiveTextStyle(
+      BuildContext context,
+      TextStyle baseStyle,
+      double mobileScale,
+      ) {
+    if (isMobile(context)) {
+      return baseStyle.copyWith(fontSize: baseStyle.fontSize! * mobileScale);
+    }
+    return baseStyle;
   }
 }

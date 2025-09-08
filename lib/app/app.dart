@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Portfolio',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
+        theme: AppTheme.lightTheme,
         routerConfig: AppRouter.router,
       ),
     );

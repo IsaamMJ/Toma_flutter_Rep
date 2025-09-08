@@ -16,7 +16,7 @@ import '../widgets/testimonial_section.dart';
 import '../widgets/automation_cta_section.dart';
 import '../widgets/dealer_software.dart';
 import '../widgets/why_toma_section.dart';
-import '../widgets/meet_employee_section.dart'; // Add this import
+import '../widgets/meet_employee_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,7 +27,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _servicesKey = GlobalKey();
   final GlobalKey _automationKey = GlobalKey();
   final GlobalKey _portfolioKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
@@ -37,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey _realCallsKey = GlobalKey();
   final GlobalKey _customerTestimonialKey = GlobalKey();
   final GlobalKey _whyTomaKey = GlobalKey();
-  final GlobalKey _meetEmployeeKey = GlobalKey(); // Add this key
+  final GlobalKey _meetEmployeeKey = GlobalKey();
   final GlobalKey _tomafooter = GlobalKey();
 
   void _scrollToSection(GlobalKey key) {
@@ -66,106 +65,122 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: AppColors.background,
           body: Stack(
             children: [
+              // Main content
               SingleChildScrollView(
                 controller: _scrollController,
                 child: Column(
                   children: [
-                    const SizedBox(height: 80), // Navigation space
+                    // Navigation space - responsive
+                    SizedBox(
+                      height: ResponsiveHelper.getResponsiveValue(
+                        context: context,
+                        mobile: 70.0,
+                        tablet: 80.0,
+                        desktop: 90.0,
+                      ),
+                    ),
 
-                    // Hero Section with animations
+                    // Hero Section
                     HeroSection(
                       onViewWorkPressed: () => _scrollToSection(_portfolioKey),
                     ),
 
-                    // Clients Section - immediately after hero
+                    // Section spacing helper
+                    _buildSectionSpacing(context),
+
+                    // Clients Section
                     const ClientsSection(),
 
+                    _buildSectionSpacing(context),
+
                     // Automation Section
-                    Container(
-                      key: _automationKey,
-                      child: const AutomationSection(),
-                    ),
+                    AutomationSection(key: _automationKey),
+
+                    _buildSectionSpacing(context),
 
                     // Testimonial Section
-                    Container(
-                      key: _testimonialKey,
-                      child: const TestimonialSection(),
-                    ),
+                    TestimonialSection(key: _testimonialKey),
+
+                    _buildSectionSpacing(context),
 
                     // Automation CTA Section
-                    Container(
-                      key: _automationCTAKey,
-                      child: const AutomationCTASection(),
-                    ),
+                    AutomationCTASection(key: _automationCTAKey),
+
+                    _buildSectionSpacing(context),
 
                     // Integration Section
-                    Container(
-                      key: _integrationKey,
-                      child: const IntegrationSection(),
-                    ),
+                    IntegrationSection(key: _integrationKey),
 
-                    Container(
-                      key: _realCallsKey,
-                      child: const RealCallsSection(),
-                    ),
+                    _buildSectionSpacing(context),
 
-                    Container(
-                      key: _customerTestimonialKey,
-                      child: const CustomerTestimonialSection(),
-                    ),
+                    // Real Calls Section
+                    RealCallsSection(key: _realCallsKey),
 
-                    Container(
-                      key: _whyTomaKey,
-                      child: const WhyTomaSection(),
-                    ),
+                    _buildSectionSpacing(context),
 
-                    // Add the MeetEmployeeSection right after WhyTomaSection
-                    Container(
-                      key: _meetEmployeeKey,
-                      child: const MeetEmployeeSection(),
-                    ),
-                    Container(
-                      key: _tomafooter,
-                      child: const TomaFooter(),
-                    ),
+                    // Customer Testimonial Section
+                    CustomerTestimonialSection(key: _customerTestimonialKey),
 
+                    _buildSectionSpacing(context),
 
-                    // Fixed Navigation Bar
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: CustomNavigationBar(
-                        onContactPressed: () => _scrollToSection(_contactKey),
-                        onCompanyPressed: _scrollToTop,
-                        onBlogPressed: () => _scrollToSection(_servicesKey),
-                        onCaseStudiesPressed: () =>
-                            _scrollToSection(_portfolioKey),
-                        onDealerLoginPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Dealer Login pressed'),
-                              backgroundColor: AppColors.textPrimary,
-                            ),
-                          );
-                        },
-                        onBookDemoPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Book Demo pressed'),
-                              backgroundColor: AppColors.buttonPrimary,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    // Why Toma Section
+                    WhyTomaSection(key: _whyTomaKey),
+
+                    _buildSectionSpacing(context),
+
+                    // Meet Employee Section
+                    MeetEmployeeSection(key: _meetEmployeeKey),
+
+                    // Footer - no spacing needed
+                    TomaFooter(key: _tomafooter),
                   ],
+                ),
+              ),
+
+              // Fixed Navigation Bar - properly positioned
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: CustomNavigationBar(
+                  onContactPressed: () => _scrollToSection(_contactKey),
+                  onCompanyPressed: _scrollToTop,
+                  onBlogPressed: () => _scrollToSection(_automationKey),
+                  onCaseStudiesPressed: () => _scrollToSection(_portfolioKey),
+                  onDealerLoginPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Dealer Login pressed'),
+                        backgroundColor: AppColors.textPrimary,
+                      ),
+                    );
+                  },
+                  onBookDemoPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Book Demo pressed'),
+                        backgroundColor: AppColors.buttonPrimary,
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
           ),
         );
-      }
-        );
-    }
-    }
+      },
+    );
+  }
+
+  // Helper method for consistent section spacing
+  Widget _buildSectionSpacing(BuildContext context) {
+    return SizedBox(
+      height: ResponsiveHelper.getResponsiveValue(
+        context: context,
+        mobile: 40.0,
+        tablet: 60.0,
+        desktop: 80.0,
+      ),
+    );
+  }
+}

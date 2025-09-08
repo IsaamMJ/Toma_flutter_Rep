@@ -2,9 +2,9 @@ class AppConstants {
   // App info
   static const String appName = 'Portfolio';
 
-  // Responsive breakpoints
+  // Responsive breakpoints (Updated to web standards)
   static const double mobileWidth = 768;
-  static const double tabletWidth = 1024;
+  static const double tabletWidth = 992;   // Changed from 1024 to 992
   static const double desktopWidth = 1440;
 
   // Spacing
