@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/text_styles.dart';
+import '../../../../core/components/nav_bar_item_button.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import 'dart:math' as math;
 
 class HeroSection extends StatefulWidget {
   final VoidCallback? onViewWorkPressed;
+  final VoidCallback? onBookDemoPressed;
 
   const HeroSection({
     super.key,
     this.onViewWorkPressed,
+    this.onBookDemoPressed,
   });
 
   @override
@@ -19,12 +24,18 @@ class HeroSection extends StatefulWidget {
 class _HeroSectionState extends State<HeroSection>
     with TickerProviderStateMixin {
   late AnimationController _backgroundController;
+  late AnimationController _carController;
 
   @override
   void initState() {
     super.initState();
     _backgroundController = AnimationController(
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 8),
+      vsync: this,
+    )..repeat();
+
+    _carController = AnimationController(
+      duration: const Duration(seconds: 12),
       vsync: this,
     )..repeat();
   }
@@ -32,6 +43,7 @@ class _HeroSectionState extends State<HeroSection>
   @override
   void dispose() {
     _backgroundController.dispose();
+    _carController.dispose();
     super.dispose();
   }
 
@@ -39,245 +51,272 @@ class _HeroSectionState extends State<HeroSection>
   Widget build(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    final heroHeight = screenHeight > 600 ? screenHeight * 0.85 : 600.0;
+    final heroHeight = screenHeight > 600 ? screenHeight * 0.9 : 650.0;
 
     return Container(
       height: heroHeight,
       width: double.infinity,
-      child: Stack(
-        children: [
-          // Animated Background
-          _buildAnimatedBackground(),
-
-          // Content
-          Center(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: ResponsiveHelper.getMaxWidth(context),
+      color: Colors.grey.shade50, // Outer background
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200), // Same as navbar
+          child: Container(
+            margin: ResponsiveHelper.getHorizontalPadding(context), // Professional spacing
+            height: heroHeight - (isMobile ? 40 : 80), // Inner container with margin
+            decoration: BoxDecoration(
+              // Fallback gradient (always visible)
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Colors.white,
+                  Colors.grey.shade100,
+                  Colors.grey.shade200,
+                ],
               ),
-              padding: ResponsiveHelper.getHorizontalPadding(context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              borderRadius: BorderRadius.circular(isMobile ? 16 : 24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(isMobile ? 16 : 24),
+              child: Stack(
+                clipBehavior: Clip.hardEdge, // Ensure proper clipping
                 children: [
-                  // Main heading with animation
-                  Text(
-                    'We Create',
-                    style: isMobile
-                        ? AppTextStyles.heroTitleMobile
-                        : AppTextStyles.heroTitle,
-                    textAlign: TextAlign.center,
-                  )
-                      .animate()
-                      .fadeIn(duration: 800.ms, delay: 200.ms)
-                      .slideY(begin: 0.3, end: 0),
-
-                  // Gradient text
-                  ShaderMask(
-                    shaderCallback: (bounds) => AppColors.primaryGradient
-                        .createShader(bounds),
-                    child: Text(
-                      'Digital Excellence',
-                      style: (isMobile
-                          ? AppTextStyles.heroTitleMobile
-                          : AppTextStyles.heroTitle)
-                          .copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
+                  // Background image with different positioning for mobile/desktop
+                  Positioned.fill(
+                    child: Transform.scale(
+                      scale: isMobile ? 1.2 : 1.0, // 1.2 = 120% size (zoom in)
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: const AssetImage('assets/images/hero_bg.jpg'),
+                            fit: BoxFit.cover,
+                            alignment: isMobile
+                                ? const Alignment(0.8, -0.5) // Right portion, more up
+                                : const Alignment(0.5, 0.5), // Center on desktop
+                            opacity: isMobile ? 0.5 : 1.0,
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  )
-                      .animate()
-                      .fadeIn(duration: 800.ms, delay: 600.ms)
-                      .slideY(begin: 0.3, end: 0),
-
-                  SizedBox(height: isMobile ? 24 : 32),
-
-                  // Subtitle
-                  Text(
-                    'Transforming ideas into powerful digital experiences\nthat drive results and inspire users',
-                    style: AppTextStyles.heroSubtitle.copyWith(
-                      fontSize: isMobile ? 18 : 20,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                  )
-                      .animate()
-                      .fadeIn(duration: 800.ms, delay: 1000.ms)
-                      .slideY(begin: 0.2, end: 0),
-
-                  SizedBox(height: isMobile ? 32 : 48),
-
-                  // CTA Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildPrimaryButton(
-                        'View Our Work',
-                        widget.onViewWorkPressed,
-                      )
-                          .animate()
-                          .fadeIn(duration: 800.ms, delay: 1400.ms)
-                          .scale(begin: const Offset(0.8, 0.8)),
-
-                      if (!isMobile) ...[
-                        const SizedBox(width: 24),
-                        _buildSecondaryButton(
-                          'Get In Touch',
-                              () {},
-                        )
-                            .animate()
-                            .fadeIn(duration: 800.ms, delay: 1600.ms)
-                            .scale(begin: const Offset(0.8, 0.8)),
-                      ],
-                    ],
                   ),
 
-                  SizedBox(height: isMobile ? 48 : 64),
+                  // Gradient overlay for text readability
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: isMobile
+                            ? [
+                          // Mobile: Less aggressive gradient since image is already at 50% opacity
+                          Colors.white.withOpacity(0.8),
+                          Colors.white.withOpacity(0.4),
+                          Colors.white.withOpacity(0.1),
+                          Colors.transparent,
+                        ]
+                            : [
+                          // Desktop: Stronger gradient for better text readability
+                          Colors.white.withOpacity(0.95),
+                          Colors.white.withOpacity(0.7),
+                          Colors.white.withOpacity(0.2),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.3, 0.6, 1.0],
+                      ),
+                    ),
+                  ),
 
-                  // Scroll indicator
-                  _buildScrollIndicator()
-                      .animate(onPlay: (controller) => controller.repeat())
-                      .fadeIn(duration: 800.ms, delay: 2000.ms)
-                      .moveY(
-                    begin: -10,
-                    end: 10,
-                    duration: 2000.ms,
-                    curve: Curves.easeInOut,
+                  // Content with proper padding inside container
+                  Padding(
+                    padding: EdgeInsets.all(isMobile ? 24.0 : 48.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: isMobile ? 1 : 5,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Main heading
+                              Text(
+                                'The AI Platform for',
+                                style: GoogleFonts.crimsonText(
+                                  fontSize: isMobile ? 32 : 48,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey.shade800,
+                                  height: 1.1,
+                                ),
+                                textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                              )
+                                  .animate()
+                                  .fadeIn(duration: 800.ms, delay: 200.ms)
+                                  .slideX(begin: -0.3, end: 0),
+
+                              // Bold text
+                              Text(
+                                'Automotive',
+                                style: GoogleFonts.crimsonText(
+                                  fontSize: isMobile ? 32 : 48,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black,
+                                  height: 1.1,
+                                ),
+                                textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                              )
+                                  .animate()
+                                  .fadeIn(duration: 800.ms, delay: 400.ms)
+                                  .slideX(begin: -0.3, end: 0),
+
+                              SizedBox(height: isMobile ? 20 : 32),
+
+                              // Subtitle
+                              Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: isMobile ? double.infinity : 500,
+                                ),
+                                child: Text(
+                                  'Toma builds personalized AI agents that automate customer communications and operational tasks for automotive dealerships.',
+                                  style: GoogleFonts.libreBaskerville(
+                                    fontSize: isMobile ? 16 : 18,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.grey.shade600,
+                                    height: 1.5,
+                                  ),
+                                  textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                                )
+                                    .animate()
+                                    .fadeIn(duration: 800.ms, delay: 600.ms)
+                                    .slideX(begin: -0.2, end: 0),
+                              ),
+
+                              SizedBox(height: isMobile ? 32 : 48),
+
+                              // CTA Buttons
+                              if (isMobile)
+                                Column(
+                                  children: [
+                                    PrimaryButton(
+                                      label: 'Talk to Toma',
+                                      icon: Icons.graphic_eq, // Sound wave icon like in your image
+                                      onPressed: widget.onViewWorkPressed,
+                                      isFullWidth: true,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    OutlinedIconButton(
+                                      label: 'Book a Demo',
+                                      icon: Icons.arrow_forward,
+                                      onPressed: widget.onBookDemoPressed,
+                                      isFullWidth: true,
+                                    ),
+                                  ],
+                                )
+                              else
+                                Row(
+                                  children: [
+                                    PrimaryButton(
+                                      label: 'Talk to Toma',
+                                      icon: Icons.graphic_eq, // Sound wave icon like in your image
+                                      onPressed: widget.onViewWorkPressed,
+                                    )
+                                        .animate()
+                                        .fadeIn(duration: 800.ms, delay: 1000.ms)
+                                        .scale(begin: const Offset(0.8, 0.8)),
+                                    const SizedBox(width: 20),
+                                    OutlinedIconButton(
+                                      label: 'Book a Demo',
+                                      icon: Icons.arrow_forward,
+                                      onPressed: widget.onBookDemoPressed,
+                                    )
+                                        .animate()
+                                        .fadeIn(duration: 800.ms, delay: 1200.ms)
+                                        .scale(begin: const Offset(0.8, 0.8)),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (!isMobile)
+                          Expanded(
+                            flex: 4,
+                            child: Container(), // Space for background image content
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  // Backed by badge (bottom right, inside container)
+                  Positioned(
+                    bottom: isMobile ? 20 : 30,
+                    right: isMobile ? 20 : 30,
+                    child: _buildBackedByBadge()
+                        .animate()
+                        .fadeIn(duration: 800.ms, delay: 1800.ms),
                   ),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildAnimatedBackground() {
+  Widget _buildBackedByBadge() {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.background,
-            AppColors.primary.withOpacity(0.8),
-            AppColors.background,
-          ],
-        ),
-      ),
-      child: AnimatedBuilder(
-        animation: _backgroundController,
-        builder: (context, child) {
-          return CustomPaint(
-            size: Size.infinite,
-            painter: BackgroundPainter(_backgroundController.value),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildPrimaryButton(String text, VoidCallback? onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.accent,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        elevation: 0,
-      ),
-      child: Text(
-        text,
-        style: AppTextStyles.button,
-      ),
-    );
-  }
-
-  Widget _buildSecondaryButton(String text, VoidCallback? onPressed) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.textPrimary,
-        side: const BorderSide(color: AppColors.textSecondary),
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Text(
-        text,
-        style: AppTextStyles.button.copyWith(
-          color: AppColors.textPrimary,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildScrollIndicator() {
-    return Column(
-      children: [
-        Text(
-          'Scroll to explore',
-          style: AppTextStyles.bodySmall,
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: 2,
-          height: 32,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.textSecondary.withOpacity(0.3),
-                AppColors.textSecondary,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(1),
+        color: Colors.grey.shade700,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class BackgroundPainter extends CustomPainter {
-  final double animationValue;
-
-  BackgroundPainter(this.animationValue);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          AppColors.accent.withOpacity(0.1),
-          AppColors.accent.withOpacity(0.05),
-          Colors.transparent,
         ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Animated circles
-    for (int i = 0; i < 3; i++) {
-      final offset = Offset(
-        size.width * (0.2 + i * 0.3),
-        size.height * (0.3 + (animationValue + i * 0.3) % 1 * 0.4),
-      );
-
-      canvas.drawCircle(
-        offset,
-        50 + i * 30,
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(BackgroundPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue;
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Backed by: ',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: Colors.white70,
+              fontSize: 12,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade600,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              'Y',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Combinator Ã— alpz',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: Colors.white,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

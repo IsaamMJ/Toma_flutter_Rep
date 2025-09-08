@@ -3,19 +3,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
-  // Hero section text
-  static TextStyle heroTitle = GoogleFonts.inter(
+  // Hero section text with Times-style serif fonts
+  static TextStyle heroTitle = GoogleFonts.crimsonText(  // Times-like serif font
     fontSize: 48,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     height: 1.1,
   );
 
-  static TextStyle heroSubtitle = GoogleFonts.inter(
+  static TextStyle heroSubtitle = GoogleFonts.crimsonText(  // Times-like serif font
     fontSize: 20,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
     height: 1.5,
+  );
+
+  // Alternative hero styles with different serif fonts
+  static TextStyle heroTitleLibreBaskerville = GoogleFonts.libreBaskerville(
+    fontSize: 48,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.1,
+  );
+
+  static TextStyle heroTitlePlayfairDisplay = GoogleFonts.playfairDisplay(
+    fontSize: 48,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.1,
   );
 
   // Section headings
@@ -71,5 +86,21 @@ class AppTextStyles {
 
   // Responsive helpers
   static TextStyle heroTitleMobile = heroTitle.copyWith(fontSize: 32);
+  static TextStyle heroSubtitleMobile = heroSubtitle.copyWith(fontSize: 16);
   static TextStyle sectionTitleMobile = sectionTitle.copyWith(fontSize: 28);
+
+  // Helper methods for creating serif styles
+  static TextStyle getSerifStyle({
+    required double fontSize,
+    required FontWeight fontWeight,
+    required Color color,
+    double height = 1.2,
+  }) {
+    return GoogleFonts.crimsonText(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+    );
+  }
 }
