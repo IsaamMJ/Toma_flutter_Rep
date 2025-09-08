@@ -166,19 +166,20 @@ class HeroSection extends StatelessWidget {
                               SizedBox(height: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL),
 
                               // CTA Buttons
+                              // CTA Buttons
                               if (isMobile)
                                 Column(
                                   children: [
-                                    EnhancedPrimaryButton(
-                                      label: 'Talk to Toma',
-                                      icon: Icons.graphic_eq,
+                                    OutlinedIconButton(
+                                      label: 'Book a Demo',
+                                      icon: Icons.arrow_forward,
                                       onPressed: () => BookDemoModal.show(context),
                                       isFullWidth: true,
                                     ),
                                     SizedBox(height: AppConstants.spaceM),
-                                    OutlinedIconButton(
-                                      label: 'Book a Demo',
-                                      icon: Icons.arrow_forward,
+                                    EnhancedPrimaryButton(
+                                      label: 'Talk to Toma',
+                                      icon: Icons.graphic_eq,
                                       onPressed: () => BookDemoModal.show(context),
                                       isFullWidth: true,
                                     ),
