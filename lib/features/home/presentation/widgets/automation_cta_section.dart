@@ -5,6 +5,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_constants.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../demo/presentation/book_a_demo_modal.dart';
 import '../../data/datasources/automation_cta_data.dart';
 
 class AutomationCTASection extends StatelessWidget {
@@ -81,7 +82,8 @@ class AutomationCTASection extends StatelessWidget {
         SizedBox(
           height: 56,
           child: ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => BookDemoModal.show(context),
+
             icon: Icon(
               Icons.mic,
               size: AppConstants.iconL,

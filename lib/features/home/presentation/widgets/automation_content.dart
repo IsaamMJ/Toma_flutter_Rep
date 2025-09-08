@@ -7,6 +7,7 @@ import '../../../../app/theme/text_styles.dart';
 import '../../../../core/components/nav_bar_item_button.dart';
 import '../../../../core/components/use_case_item.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../demo/presentation/book_a_demo_modal.dart';
 import '../../data/datasources/automation_data.dart';
 
 class AutomationContent extends StatefulWidget {
@@ -65,7 +66,7 @@ class _AutomationContentState extends State<AutomationContent> {
     return EnhancedPrimaryButton(
       label: 'Talk to Toma',
       icon: Icons.graphic_eq,
-      onPressed: () {},
+      onPressed: () => BookDemoModal.show(context),
       isFullWidth: true,
     ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 400.ms);
   }

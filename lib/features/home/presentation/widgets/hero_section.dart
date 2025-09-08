@@ -6,16 +6,10 @@ import '../../../../app/theme/app_constants.dart';
 import '../../../../app/theme/text_styles.dart';
 import '../../../../core/components/nav_bar_item_button.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../demo/presentation/book_a_demo_modal.dart';
 
 class HeroSection extends StatelessWidget {
-  final VoidCallback? onViewWorkPressed;
-  final VoidCallback? onBookDemoPressed;
-
-  const HeroSection({
-    super.key,
-    this.onViewWorkPressed,
-    this.onBookDemoPressed,
-  });
+  const HeroSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -172,14 +166,14 @@ class HeroSection extends StatelessWidget {
                                     EnhancedPrimaryButton(
                                       label: 'Talk to Toma',
                                       icon: Icons.graphic_eq,
-                                      onPressed: onViewWorkPressed,
+                                      onPressed: () => BookDemoModal.show(context),
                                       isFullWidth: true,
                                     ),
                                     SizedBox(height: AppConstants.spaceM),
                                     OutlinedIconButton(
                                       label: 'Book a Demo',
                                       icon: Icons.arrow_forward,
-                                      onPressed: onBookDemoPressed,
+                                      onPressed: () => BookDemoModal.show(context),
                                       isFullWidth: true,
                                     ),
                                   ],
@@ -190,7 +184,7 @@ class HeroSection extends StatelessWidget {
                                     EnhancedPrimaryButton(
                                       label: 'Talk to Toma',
                                       icon: Icons.graphic_eq,
-                                      onPressed: onViewWorkPressed,
+                                      onPressed: () => BookDemoModal.show(context),
                                     )
                                         .animate()
                                         .fadeIn(duration: AppConstants.animationSlow, delay: 1000.ms)
@@ -199,7 +193,7 @@ class HeroSection extends StatelessWidget {
                                     OutlinedIconButton(
                                       label: 'Book a Demo',
                                       icon: Icons.arrow_forward,
-                                      onPressed: onBookDemoPressed,
+                                      onPressed: () => BookDemoModal.show(context),
                                     )
                                         .animate()
                                         .fadeIn(duration: AppConstants.animationSlow, delay: 1200.ms)

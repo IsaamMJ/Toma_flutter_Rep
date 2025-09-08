@@ -75,9 +75,8 @@ class _HomePageState extends State<HomePage> {
                 ),
 
                 // Hero Section
-                HeroSection(
-                  onViewWorkPressed: () => _scrollToSection(_automationKey),
-                ),
+                const HeroSection(),
+
 
                 // Clients Section
                 const ClientsSection(),
@@ -136,14 +135,7 @@ class _HomePageState extends State<HomePage> {
               onCompanyPressed: _scrollToTop,
               onBlogPressed: () => _scrollToSection(_automationKey),
               onCaseStudiesPressed: () => _scrollToSection(_customerTestimonialKey),
-              onDealerLoginPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Dealer Login pressed'),
-                    backgroundColor: AppColors.textPrimary,
-                  ),
-                );
-              },
+              // Removed onDealerLoginPressed - navigation bar handles it internally now
               onBookDemoPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

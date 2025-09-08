@@ -4,6 +4,8 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/text_styles.dart';
 import '../../app/theme/app_constants.dart';
 import '../../core/utils/responsive_helper.dart';
+import '../../features/authentication/presentation/login_modal.dart';
+import '../../features/demo/presentation/book_a_demo_modal.dart';
 import '../components/nav_bar_item_button.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -11,7 +13,6 @@ class CustomNavigationBar extends StatefulWidget {
   final VoidCallback? onCompanyPressed;
   final VoidCallback? onBlogPressed;
   final VoidCallback? onCaseStudiesPressed;
-  final VoidCallback? onDealerLoginPressed;
   final VoidCallback? onBookDemoPressed;
   final String? activeRoute;
 
@@ -21,7 +22,6 @@ class CustomNavigationBar extends StatefulWidget {
     this.onCompanyPressed,
     this.onBlogPressed,
     this.onCaseStudiesPressed,
-    this.onDealerLoginPressed,
     this.onBookDemoPressed,
     this.activeRoute,
   });
@@ -57,7 +57,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200), // Max content width - this prevents edge stretching
+          constraints: const BoxConstraints(maxWidth: 1200),
           child: Padding(
             padding: ResponsiveHelper.getHorizontalPadding(context),
             child: Row(
@@ -136,12 +136,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         OutlinedIconButton(
           label: 'Dealer Login',
           icon: Icons.person_outline,
-          onPressed: widget.onDealerLoginPressed,
+          onPressed: () => _showLoginModal(),
         ),
         const SizedBox(width: 12),
         EnhancedPrimaryButton(
           label: 'Book a Demo',
-          onPressed: widget.onBookDemoPressed,
+          onPressed: () => _showBookDemoModal(), // Updated this line
         ),
       ],
     );
@@ -226,7 +226,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 isFullWidth: true,
                 onPressed: () {
                   Navigator.pop(context);
-                  widget.onDealerLoginPressed?.call();
+                  _showLoginModal(); // Updated this line
                 },
               ),
               const SizedBox(height: 12),
@@ -235,7 +235,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 isFullWidth: true,
                 onPressed: () {
                   Navigator.pop(context);
-                  widget.onBookDemoPressed?.call();
+                  _showBookDemoModal(); // Updated this line
                 },
               ),
               const SizedBox(height: 20),
@@ -244,6 +244,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         ),
       ),
     ).then((_) => setState(() => _isMenuOpen = false));
+  }
+
+  void _showBookDemoModal() {
+    HapticFeedback.lightImpact();
+    BookDemoModal.show(context);
   }
 
   Widget _buildMenuItem(String title, IconData icon, VoidCallback? onPressed) {
@@ -264,5 +269,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
     );
+  }
+
+  // New method to show login modal (ignores any passed callback and uses internal modal)
+  void _showLoginModal() {
+    HapticFeedback.lightImpact();
+    LoginModal.show(context);
+    // Note: We ignore widget.onDealerLoginPressed and use our internal modal instead
   }
 }

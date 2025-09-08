@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../demo/presentation/book_a_demo_modal.dart';
 
 class MeetEmployeeSection extends StatelessWidget {
   const MeetEmployeeSection({super.key});
@@ -75,7 +76,7 @@ class MeetEmployeeSection extends StatelessWidget {
         const SizedBox(height: 40),
         _buildBenefitsList(),
         const SizedBox(height: 40),
-        _buildTalkToTomaButton(),
+        _buildTalkToTomaButton(context),
       ],
     );
   }
@@ -125,7 +126,7 @@ class MeetEmployeeSection extends StatelessWidget {
     );
   }
 
-  Widget _buildTalkToTomaButton() {
+  Widget _buildTalkToTomaButton(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -138,7 +139,8 @@ class MeetEmployeeSection extends StatelessWidget {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () => BookDemoModal.show(context), // ✅ Opens modal
+
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black87,
           foregroundColor: Colors.white,
