@@ -1,0 +1,6 @@
+[build]
+command = "bash ./install_flutter.sh && flutter build web --release"
+publish = "build/web"
+
+[build.environment]
+PATH = "/opt/buildhome/flutter/bin:/opt/buildhome/.pub-cache/bin:$PATH"
