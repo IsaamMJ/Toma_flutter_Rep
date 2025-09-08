@@ -44,6 +44,12 @@ class AppAssets {
   static const String brandHonda = 'assets/images/brands/honda.png';
 
   // Add to app_assets.dart
+// Customer testimonial assets
+  static const String customerNissan = 'assets/customers/nissan.jpg';
+  static const String customerToyota = 'assets/customers/toyota.jpg';
+  static const String customerHonda = 'assets/customers/honda.jpg';
+
+  // Add to app_assets.dart
   static const String ctaImage = 'assets/images/cta_image.png';
 
   // Validation method to check all assets exist

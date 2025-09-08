@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/text_styles.dart';
 import '../../../../app/theme/app_constants.dart';
+import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../data/datasources/customer_testimonial_dat.dart';
 
 class CustomerTestimonialSection extends StatefulWidget {
   const CustomerTestimonialSection({super.key});
@@ -16,42 +18,13 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
   int currentIndex = 0;
   final PageController _pageController = PageController();
 
-  final List<Map<String, dynamic>> testimonials = [
-    {
-      'quote': 'Toma saves us 43 hours each month and is like adding a new team member. Our advisors can focus on in-person customers while AI handles routine inquiries perfectly.',
-      'name': 'Eric Stockton',
-      'title': 'Service Manager',
-      'company': 'Boulder Nissan',
-      'location': 'Boulder, CO',
-      'results': '43 hours saved monthly',
-      'dealershipType': 'Nissan',
-      'image': 'assets/customers/nissan.jpg',
-    },
-    {
-      'quote': 'Response times improved dramatically and customer satisfaction is at an all-time high. Toma handles complex service questions better than we expected.',
-      'name': 'Johnson',
-      'title': 'Operations Manager',
-      'company': 'Metro Toyota',
-      'location': 'Seattle, WA',
-      'results': '85% faster response times',
-      'dealershipType': 'Toyota',
-      'image': 'assets/customers/toyota.jpg',
-    },
-    {
-      'quote': 'Our team can focus on building relationships and closing deals while Toma automates routine tasks. The ROI has been exceptional.',
-      'name': 'Michael Chen',
-      'title': 'General Manager',
-      'company': 'Pacific Honda',
-      'location': 'San Diego, CA',
-      'results': '200% ROI in 6 months',
-      'dealershipType': 'Honda',
-      'image': 'assets/customers/honda.jpg',
-    },
-  ];
-
   void _goToTestimonial(int index) {
     setState(() => currentIndex = index);
-    _pageController.animateToPage(index, duration: AppConstants.animationMedium, curve: Curves.easeInOut);
+    _pageController.animateToPage(
+      index,
+      duration: AppConstants.animationMedium,
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -60,38 +33,35 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        vertical: ResponsiveHelper.getResponsiveValue(
-          context: context,
-          mobile: AppConstants.paddingXXL,
-          tablet: AppConstants.paddingXXL + 20,
-          desktop: 100,
-        ),
-      ),
+      padding: EdgeInsets.symmetric(vertical: AppConstants.sectionPaddingVertical),
       color: AppColors.background,
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
           child: Padding(
             padding: ResponsiveHelper.getHorizontalPadding(context),
             child: Column(
               children: [
                 _buildHeader(context, isMobile),
-                SizedBox(height: ResponsiveHelper.getResponsiveValue(
-                  context: context, mobile: 40, tablet: 50, desktop: 60,
-                )),
+                SizedBox(height: AppConstants.spaceXXL),
                 SizedBox(
                   height: ResponsiveHelper.getResponsiveValue(
-                    context: context, mobile: 480, tablet: 420, desktop: 380,
+                    context: context,
+                    mobile: 480.0,
+                    tablet: 420.0,
+                    desktop: 380.0,
                   ),
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: testimonials.length,
+                    itemCount: CustomerTestimonialData.testimonials.length,
                     onPageChanged: (index) => setState(() => currentIndex = index),
-                    itemBuilder: (context, index) => _buildTestimonialCard(testimonials[index], context),
+                    itemBuilder: (context, index) => _buildTestimonialCard(
+                      CustomerTestimonialData.testimonials[index],
+                      context,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: AppConstants.spaceM),
                 _buildNavigationControls(context),
               ],
             ),
@@ -105,41 +75,45 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
     return Column(
       children: [
         Text(
-          'Customer Success Stories',
-          style: isMobile ? AppTextStyles.sectionTitleMobile : AppTextStyles.sectionTitle,
+          CustomerTestimonialData.sectionTitle,
+          style: GoogleFonts.crimsonText(
+            fontSize: isMobile ? AppConstants.fontSizeHeroMobile : AppConstants.fontSizeTitle,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            height: 1.2,
+          ),
           textAlign: TextAlign.center,
-        ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.3),
-        SizedBox(height: ResponsiveHelper.getResponsiveValue(
-          context: context, mobile: 12, tablet: 16, desktop: 20,
-        )),
+        ).animate().fadeIn(duration: AppConstants.animationSlow).slideY(begin: 0.3),
+
+        SizedBox(height: AppConstants.spaceL),
+
         Text(
-          'See how dealerships are transforming their operations\nand achieving measurable results with our AI platform.',
-          style: isMobile
-              ? AppTextStyles.bodyMedium.copyWith(fontSize: 14)
-              : AppTextStyles.bodyLarge,
+          CustomerTestimonialData.sectionDescription,
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontSize: isMobile ? AppConstants.fontSizeS : AppConstants.fontSizeL,
+          ),
           textAlign: TextAlign.center,
-        ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.3),
       ],
     );
   }
 
-  Widget _buildTestimonialCard(Map<String, dynamic> testimonial, BuildContext context) {
+  Widget _buildTestimonialCard(CustomerTestimonial testimonial, BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
-    // Define consistent card height for both cards
     final cardHeight = ResponsiveHelper.getResponsiveValue(
       context: context,
-      mobile: 200,
-      tablet: 240,
-      desktop: 280,
+      mobile: 200.0,
+      tablet: 240.0,
+      desktop: 280.0,
     );
 
     if (isMobile) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceS),
         child: Column(
           children: [
             _buildPersonCard(testimonial, context, cardHeight),
-            const SizedBox(height: 24),
+            SizedBox(height: AppConstants.spaceL),
             _buildQuoteCard(testimonial, context, cardHeight),
           ],
         ),
@@ -147,31 +121,31 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceM),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(flex: 2, child: _buildQuoteCard(testimonial, context, cardHeight)),
-          const SizedBox(width: 48),
+          SizedBox(width: AppConstants.spaceXXL),
           Expanded(flex: 1, child: _buildPersonCard(testimonial, context, cardHeight)),
         ],
       ),
     );
   }
 
-  Widget _buildPersonCard(Map<String, dynamic> testimonial, BuildContext context, double cardHeight) {
-    final brandColors = _getBrandColors(testimonial['dealershipType']);
+  Widget _buildPersonCard(CustomerTestimonial testimonial, BuildContext context, double cardHeight) {
+    final brandColors = _getBrandColors(testimonial.dealershipType);
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
-      height: cardHeight, // Use the passed cardHeight parameter
+      height: cardHeight,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: brandColors,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         boxShadow: [
           BoxShadow(
             color: AppColors.shadowMedium,
@@ -182,11 +156,10 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
       ),
       child: Stack(
         children: [
-          // Background pattern/texture
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(AppConstants.radiusL),
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
@@ -199,42 +172,36 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
               ),
             ),
           ),
-
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(AppConstants.spaceL),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Company branding
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      testimonial['company'].split(' ')[0],
+                      testimonial.company.split(' ')[0],
                       style: AppTextStyles.cardTitle.copyWith(
                         color: Colors.white,
-                        fontSize: isMobile ? 18 : 22,
+                        fontSize: isMobile ? AppConstants.fontSizeL : AppConstants.fontSizeXXL,
                         fontWeight: FontWeight.w300,
                       ),
                     ),
                     Text(
-                      testimonial['dealershipType'].toUpperCase(),
+                      testimonial.dealershipType.toUpperCase(),
                       style: AppTextStyles.cardTitle.copyWith(
                         color: Colors.white,
-                        fontSize: isMobile ? 16 : 18,
+                        fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
                       ),
                     ),
                   ],
                 ),
-
                 const Spacer(),
-
-                // Person section
                 Row(
                   children: [
-                    // Person image
                     Container(
                       width: isMobile ? 56 : 64,
                       height: isMobile ? 56 : 64,
@@ -250,47 +217,36 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
                         ],
                       ),
                       child: ClipOval(
-                        child: testimonial['image'] != null
-                            ? (testimonial['image'].startsWith('http')
-                            ? Image.network(
-                          testimonial['image'],
+                        child: Image.asset(
+                          testimonial.imagePath,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => _buildPersonAvatar(testimonial),
-                        )
-                            : Image.asset(
-                          testimonial['image'],
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _buildPersonAvatar(testimonial),
-                        ))
-                            : _buildPersonAvatar(testimonial),
+                        ),
                       ),
                     ),
-
-                    const SizedBox(width: 16),
-
-                    // Person details
+                    SizedBox(width: AppConstants.spaceM),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            testimonial['name'],
+                            testimonial.name,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
-                              fontSize: isMobile ? 14 : 16,
+                              fontSize: isMobile ? AppConstants.fontSizeS : AppConstants.fontSizeM,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: AppConstants.spaceXS),
                           Text(
-                            testimonial['title'],
+                            testimonial.title,
                             style: AppTextStyles.bodySmall.copyWith(
                               color: Colors.white.withOpacity(0.9),
-                              fontSize: isMobile ? 11 : 12,
+                              fontSize: isMobile ? 11 : AppConstants.fontSizeXS,
                             ),
                           ),
                           Text(
-                            testimonial['location'],
+                            testimonial.location,
                             style: AppTextStyles.bodySmall.copyWith(
                               color: Colors.white.withOpacity(0.7),
                               fontSize: isMobile ? 10 : 11,
@@ -301,19 +257,19 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // Results badge
+                SizedBox(height: AppConstants.spaceM),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppConstants.spaceS,
+                    vertical: AppConstants.spaceXS,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(AppConstants.radiusL),
                     border: Border.all(color: Colors.white.withOpacity(0.3)),
                   ),
                   child: Text(
-                    testimonial['results'],
+                    testimonial.results,
                     style: AppTextStyles.bodySmall.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -326,10 +282,10 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms).slideX(begin: 0.3);
+    ).animate().fadeIn(duration: AppConstants.animationSlow).slideX(begin: 0.3);
   }
 
-  Widget _buildPersonAvatar(Map<String, dynamic> testimonial) {
+  Widget _buildPersonAvatar(CustomerTestimonial testimonial) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -339,7 +295,7 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
       ),
       child: Center(
         child: Text(
-          testimonial['name'].split(' ').map((n) => n[0]).join(''),
+          testimonial.name.split(' ').map((n) => n[0]).join(''),
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w600,
@@ -349,15 +305,15 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
     );
   }
 
-  Widget _buildQuoteCard(Map<String, dynamic> testimonial, BuildContext context, double cardHeight) {
+  Widget _buildQuoteCard(CustomerTestimonial testimonial, BuildContext context, double cardHeight) {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
-      height: cardHeight, // Use the passed cardHeight parameter
-      padding: const EdgeInsets.all(28),
+      height: cardHeight,
+      padding: EdgeInsets.all(AppConstants.spaceXL),
       decoration: BoxDecoration(
         gradient: AppColors.cardGradient,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppConstants.radiusL),
         border: Border.all(color: AppColors.divider),
         boxShadow: [
           BoxShadow(
@@ -370,13 +326,17 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.format_quote, size: 36, color: AppColors.accent.withOpacity(0.6)),
-          const SizedBox(height: 20),
-          Expanded( // Allow text to fill remaining space
+          Icon(
+            Icons.format_quote,
+            size: 36,
+            color: AppColors.accent.withOpacity(0.6),
+          ),
+          SizedBox(height: AppConstants.spaceL),
+          Expanded(
             child: Text(
-              testimonial['quote'],
+              testimonial.quote,
               style: AppTextStyles.bodyLarge.copyWith(
-                fontSize: isMobile ? 16 : 18,
+                fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
                 fontStyle: FontStyle.italic,
                 height: 1.6,
                 color: AppColors.textPrimary,
@@ -385,22 +345,25 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms, delay: 200.ms);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms);
   }
 
   Widget _buildNavigationControls(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildNavButton(Icons.arrow_back_ios, currentIndex > 0 ? () => _goToTestimonial(currentIndex - 1) : null),
-        const SizedBox(width: 24),
+        _buildNavButton(
+          Icons.arrow_back_ios,
+          currentIndex > 0 ? () => _goToTestimonial(currentIndex - 1) : null,
+        ),
+        SizedBox(width: AppConstants.spaceL),
         Row(
-          children: testimonials.asMap().entries.map((entry) {
+          children: CustomerTestimonialData.testimonials.asMap().entries.map((entry) {
             final isActive = currentIndex == entry.key;
             return GestureDetector(
               onTap: () => _goToTestimonial(entry.key),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6),
+                margin: EdgeInsets.symmetric(horizontal: AppConstants.spaceXS),
                 width: isActive ? 32 : 8,
                 height: 8,
                 decoration: BoxDecoration(
@@ -411,8 +374,13 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
             );
           }).toList(),
         ),
-        const SizedBox(width: 24),
-        _buildNavButton(Icons.arrow_forward_ios, currentIndex < testimonials.length - 1 ? () => _goToTestimonial(currentIndex + 1) : null),
+        SizedBox(width: AppConstants.spaceL),
+        _buildNavButton(
+          Icons.arrow_forward_ios,
+          currentIndex < CustomerTestimonialData.testimonials.length - 1
+              ? () => _goToTestimonial(currentIndex + 1)
+              : null,
+        ),
       ],
     );
   }
@@ -422,19 +390,31 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
     return Container(
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isEnabled ? AppColors.divider : AppColors.textMuted.withOpacity(0.3)),
-        boxShadow: isEnabled ? [BoxShadow(color: AppColors.shadowLight, blurRadius: 8, offset: const Offset(0, 2))] : null,
+        borderRadius: BorderRadius.circular(AppConstants.spaceS),
+        border: Border.all(
+          color: isEnabled ? AppColors.divider : AppColors.textMuted.withOpacity(0.3),
+        ),
+        boxShadow: isEnabled ? [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          )
+        ] : null,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppConstants.spaceS),
           onTap: onTap,
           child: SizedBox(
             width: 40,
             height: 40,
-            child: Icon(icon, color: isEnabled ? AppColors.textSecondary : AppColors.textMuted, size: 16),
+            child: Icon(
+              icon,
+              color: isEnabled ? AppColors.textSecondary : AppColors.textMuted,
+              size: AppConstants.iconS,
+            ),
           ),
         ),
       ),
@@ -443,10 +423,14 @@ class _CustomerTestimonialSectionState extends State<CustomerTestimonialSection>
 
   List<Color> _getBrandColors(String dealershipType) {
     switch (dealershipType.toLowerCase()) {
-      case 'nissan': return [Color(0xFFE52B2B), Color(0xFFC41E3A)];
-      case 'toyota': return [Color(0xFFEB0A1E), Color(0xFFCC0A1E)];
-      case 'honda': return [Color(0xFF0066CC), Color(0xFF004499)];
-      default: return [AppColors.accent, AppColors.accentHover];
+      case 'nissan':
+        return [Color(0xFFE52B2B), Color(0xFFC41E3A)];
+      case 'toyota':
+        return [Color(0xFFEB0A1E), Color(0xFFCC0A1E)];
+      case 'honda':
+        return [Color(0xFF0066CC), Color(0xFF004499)];
+      default:
+        return [AppColors.accent, AppColors.accentHover];
     }
   }
 }

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_constants.dart';
+import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../demo/presentation/book_a_demo_modal.dart';
+import '../../data/datasources/meet_employee_data.dart';
 
 class MeetEmployeeSection extends StatelessWidget {
   const MeetEmployeeSection({super.key});
@@ -10,11 +15,11 @@ class MeetEmployeeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80),
+      padding: EdgeInsets.symmetric(vertical: AppConstants.sectionPaddingVertical),
       color: Colors.white,
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
           child: Padding(
             padding: ResponsiveHelper.getHorizontalPadding(context),
             child: ResponsiveHelper.isMobile(context)
@@ -31,7 +36,7 @@ class MeetEmployeeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: _buildContentSection(context)),
-        const SizedBox(width: 60),
+        SizedBox(width: AppConstants.spaceXXL),
         Expanded(child: _buildImageSection()),
       ],
     );
@@ -41,7 +46,7 @@ class MeetEmployeeSection extends StatelessWidget {
     return Column(
       children: [
         _buildImageSection(),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildContentSection(context),
       ],
     );
@@ -53,63 +58,61 @@ class MeetEmployeeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Meet Your New Employee',
-          style: TextStyle(
-            fontSize: isMobile ? 32 : 48,
+          MeetEmployeeData.mainTitle,
+          style: GoogleFonts.crimsonText(
+            fontSize: isMobile ? AppConstants.fontSizeHeroMobile : AppConstants.fontSizeHero,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
             height: 1.2,
           ),
-        ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow).slideX(begin: -0.3),
 
-        const SizedBox(height: 24),
+        SizedBox(height: AppConstants.spaceL),
 
         Text(
-          'Toma acts as a virtual team member, tirelessly working around the clock to handle tasks with speed and precision.',
-          style: TextStyle(
-            fontSize: isMobile ? 16 : 18,
+          MeetEmployeeData.description,
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontSize: isMobile ? AppConstants.fontSizeM : AppConstants.fontSizeL,
             color: Colors.grey.shade600,
             height: 1.6,
           ),
-        ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideX(begin: -0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideX(begin: -0.3),
 
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildBenefitsList(),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildTalkToTomaButton(context),
       ],
     );
   }
 
   Widget _buildBenefitsList() {
-    final benefits = [
-      'Reduce training and turnover costs',
-      'Increase efficiency without adding headcount',
-      'Never miss a sales or service opportunity',
-    ];
-
     return Column(
-      children: benefits.asMap().entries.map((entry) {
+      children: MeetEmployeeData.benefits.asMap().entries.map((entry) {
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: EdgeInsets.only(bottom: AppConstants.spaceM),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 24,
-                height: 24,
+                width: AppConstants.iconL,
+                height: AppConstants.iconL,
                 decoration: const BoxDecoration(
                   color: Colors.black87,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, color: Colors.white, size: 14),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: AppConstants.fontSizeS,
+                ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: AppConstants.spaceM),
               Expanded(
                 child: Text(
                   entry.value,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontSize: AppConstants.fontSizeM,
                     fontWeight: FontWeight.w500,
                     color: Colors.black87,
                     height: 1.5,
@@ -119,7 +122,7 @@ class MeetEmployeeSection extends StatelessWidget {
             ],
           ),
         ).animate().fadeIn(
-          duration: 600.ms,
+          duration: AppConstants.animationSlow,
           delay: (400 + (entry.key * 150)).ms,
         ).slideX(begin: -0.2);
       }).toList(),
@@ -129,7 +132,7 @@ class MeetEmployeeSection extends StatelessWidget {
   Widget _buildTalkToTomaButton(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(AppConstants.radiusRound),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -139,40 +142,75 @@ class MeetEmployeeSection extends StatelessWidget {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () => BookDemoModal.show(context), // ✅ Opens modal
-
+        onPressed: () => BookDemoModal.show(context),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black87,
+          backgroundColor: AppColors.buttonPrimary,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppConstants.spaceXL,
+            vertical: AppConstants.spaceL,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.radiusRound),
+          ),
           elevation: 0,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Talk to Toma',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              MeetEmployeeData.buttonText,
+              style: AppTextStyles.button.copyWith(
+                fontSize: AppConstants.fontSizeM,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: AppConstants.spaceS),
             Container(
-              width: 20,
-              height: 20,
+              width: AppConstants.iconL,
+              height: AppConstants.iconL,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(width: 2, height: 12, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(1))),
-                  Container(width: 2, height: 16, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(1))),
-                  Container(width: 2, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(1))),
-                  Container(width: 2, height: 14, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(1))),
+                  Container(
+                    width: 2,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(1),
+                    ),
+                  ),
+                  Container(
+                    width: 2,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(1),
+                    ),
+                  ),
+                  Container(
+                    width: 2,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(1),
+                    ),
+                  ),
+                  Container(
+                    width: 2,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(1),
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms, delay: 800.ms).scale(begin: const Offset(0.9, 0.9));
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 800.ms).scale(begin: const Offset(0.9, 0.9));
   }
 
   Widget _buildImageSection() {
@@ -181,19 +219,19 @@ class MeetEmployeeSection extends StatelessWidget {
       height: 400,
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
         child: Image.asset(
-          'assets/aiemp.png',
+          MeetEmployeeData.employeeImage,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
               ),
               child: Center(
                 child: Column(
@@ -201,14 +239,14 @@ class MeetEmployeeSection extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.person_outline,
-                      size: 80,
+                      size: AppConstants.iconXXL + AppConstants.spaceXL,
                       color: Colors.grey.shade400,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppConstants.spaceM),
                     Text(
                       'AI Employee',
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: AppTextStyles.cardTitle.copyWith(
+                        fontSize: AppConstants.fontSizeL,
                         fontWeight: FontWeight.w500,
                         color: Colors.grey.shade600,
                       ),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_constants.dart';
+import '../../../../app/theme/text_styles.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../data/datasources/footer_data.dart';
 
 class TomaFooter extends StatefulWidget {
   const TomaFooter({super.key});
@@ -25,20 +29,20 @@ class _TomaFooterState extends State<TomaFooter> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(40),
+      padding: EdgeInsets.all(AppConstants.spaceXXL),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: AppConstants.maxContentWidth),
           child: Padding(
             padding: ResponsiveHelper.getHorizontalPadding(context),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppConstants.radiusXXL),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 32 : 60,
-                vertical: isMobile ? 40 : 60,
+                horizontal: isMobile ? AppConstants.spaceXL : AppConstants.spaceXXL + AppConstants.spaceS,
+                vertical: isMobile ? AppConstants.spaceXXL : AppConstants.spaceXXL + AppConstants.spaceS,
               ),
               child: Column(
                 children: [
@@ -47,21 +51,16 @@ class _TomaFooterState extends State<TomaFooter> {
                   else
                     _buildDesktopLayout(context),
 
-                  const SizedBox(height: 40),
-
-                  // Social media icons
+                  SizedBox(height: AppConstants.spaceXXL),
                   _buildSocialMediaSection(),
+                  SizedBox(height: AppConstants.spaceXXL),
 
-                  const SizedBox(height: 40),
-
-                  // Divider line
                   Container(
                     height: 1,
                     color: Colors.grey.shade800,
-                    margin: const EdgeInsets.only(bottom: 30),
+                    margin: EdgeInsets.only(bottom: AppConstants.spaceXL),
                   ),
 
-                  // Bottom section with copyright and links
                   _buildBottomSection(context),
                 ],
               ),
@@ -76,13 +75,10 @@ class _TomaFooterState extends State<TomaFooter> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left side - Logo and signup
         Expanded(
           flex: 2,
           child: _buildLeftSection(context),
         ),
-
-        // Right side - Navigation links
         _buildRightSection(context),
       ],
     );
@@ -92,7 +88,7 @@ class _TomaFooterState extends State<TomaFooter> {
     return Column(
       children: [
         _buildLeftSection(context),
-        const SizedBox(height: 40),
+        SizedBox(height: AppConstants.spaceXXL),
         _buildRightSection(context),
       ],
     );
@@ -104,45 +100,40 @@ class _TomaFooterState extends State<TomaFooter> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Logo
         Text(
-          'toma',
-          style: TextStyle(
-            fontSize: isMobile ? 36 : 48,
+          FooterData.logoText,
+          style: AppTextStyles.heroTitle.copyWith(
+            fontSize: isMobile ? 36.0 : AppConstants.fontSizeHero,
             fontWeight: FontWeight.w300,
             color: Colors.white,
             letterSpacing: -1.5,
           ),
-        ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow).slideY(begin: 0.3),
 
-        const SizedBox(height: 16),
+        SizedBox(height: AppConstants.spaceM),
 
-        // Tagline
         Text(
-          'AI Automation Platform for Automotive Dealerships.',
-          style: TextStyle(
-            fontSize: isMobile ? 14 : 16,
+          FooterData.tagline,
+          style: AppTextStyles.bodyMedium.copyWith(
+            fontSize: isMobile ? AppConstants.fontSizeS : AppConstants.fontSizeM,
             color: Colors.grey.shade400,
             height: 1.4,
             fontWeight: FontWeight.w400,
           ),
-        ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 200.ms).slideY(begin: 0.3),
 
-        const SizedBox(height: 32),
+        SizedBox(height: AppConstants.spaceXL),
 
-        // Signup text
         Text(
-          'Sign up and watch us build.',
-          style: TextStyle(
-            fontSize: isMobile ? 14 : 15,
+          FooterData.signupText,
+          style: AppTextStyles.bodyMedium.copyWith(
+            fontSize: isMobile ? AppConstants.fontSizeS : 15.0,
             color: Colors.grey.shade400,
             fontWeight: FontWeight.w400,
           ),
-        ).animate().fadeIn(duration: 800.ms, delay: 400.ms).slideY(begin: 0.3),
+        ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 400.ms).slideY(begin: 0.3),
 
-        const SizedBox(height: 16),
-
-        // Email signup form
+        SizedBox(height: AppConstants.spaceM),
         _buildEmailSignupForm(isMobile),
       ],
     );
@@ -153,10 +144,9 @@ class _TomaFooterState extends State<TomaFooter> {
       constraints: const BoxConstraints(maxWidth: 400),
       child: Row(
         children: [
-          // Email input
           Expanded(
             child: Container(
-              height: 44,
+              height: AppConstants.buttonHeight,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey.shade700,
@@ -166,61 +156,62 @@ class _TomaFooterState extends State<TomaFooter> {
               ),
               child: TextField(
                 controller: _emailController,
-                style: const TextStyle(
+                style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: AppConstants.fontSizeS,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'your@dealership.com',
-                  hintStyle: TextStyle(
+                  hintText: FooterData.emailPlaceholder,
+                  hintStyle: AppTextStyles.bodyMedium.copyWith(
                     color: Colors.grey.shade500,
-                    fontSize: 14,
+                    fontSize: AppConstants.fontSizeS,
                   ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 12,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: AppConstants.spaceL,
+                    vertical: AppConstants.spaceS,
                   ),
                 ),
               ),
             ),
           ),
 
-          const SizedBox(width: 12),
+          SizedBox(width: AppConstants.spaceS),
 
-          // Submit button
           MouseRegion(
             onEnter: (_) => setState(() => _isHovered = true),
             onExit: (_) => setState(() => _isHovered = false),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+              duration: AppConstants.animationFast,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle submit
                   if (_emailController.text.isNotEmpty) {
-                    // Process email signup
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Signed up with ${_emailController.text}'),
                         backgroundColor: Colors.grey.shade800,
                       ),
                     );
+                    _emailController.clear();
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _isHovered ? Colors.white : Colors.grey.shade300,
                   foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppConstants.spaceL,
+                    vertical: AppConstants.spaceS,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22),
                   ),
                   elevation: 0,
-                  minimumSize: const Size(80, 44),
+                  minimumSize: Size(80, AppConstants.buttonHeight),
                 ),
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(
-                    fontSize: 14,
+                child: Text(
+                  FooterData.submitButtonText,
+                  style: AppTextStyles.button.copyWith(
+                    fontSize: AppConstants.fontSizeS,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -229,33 +220,24 @@ class _TomaFooterState extends State<TomaFooter> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms, delay: 600.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 600.ms).slideY(begin: 0.3);
   }
 
   Widget _buildRightSection(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
 
-    final navigationLinks = [
-      'Contact',
-      'Company',
-      'Case Studies',
-      'Blog',
-      'Careers',
-    ];
-
     return Container(
       alignment: isMobile ? Alignment.center : Alignment.topRight,
       child: Column(
         crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.end,
-        children: navigationLinks.asMap().entries.map((entry) {
+        children: FooterData.navigationLinks.asMap().entries.map((entry) {
           final index = entry.key;
           final link = entry.value;
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: EdgeInsets.only(bottom: AppConstants.spaceS),
             child: InkWell(
               onTap: () {
-                // Handle navigation
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Navigate to $link'),
@@ -265,8 +247,8 @@ class _TomaFooterState extends State<TomaFooter> {
               },
               child: Text(
                 link,
-                style: TextStyle(
-                  fontSize: 15,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontSize: 15.0,
                   color: Colors.grey.shade400,
                   fontWeight: FontWeight.w400,
                   height: 1.6,
@@ -274,7 +256,7 @@ class _TomaFooterState extends State<TomaFooter> {
               ),
             ),
           ).animate().fadeIn(
-            duration: 600.ms,
+            duration: AppConstants.animationSlow,
             delay: (800 + (index * 100)).ms,
           ).slideY(begin: 0.3);
         }).toList(),
@@ -285,14 +267,16 @@ class _TomaFooterState extends State<TomaFooter> {
   Widget _buildSocialMediaSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialIcon(Icons.close, 'X (Twitter)'),
-        const SizedBox(width: 16),
-        _buildSocialIcon(Icons.business, 'LinkedIn'),
-        const SizedBox(width: 16),
-        _buildSocialIcon(Icons.play_arrow, 'YouTube'),
-      ],
-    ).animate().fadeIn(duration: 800.ms, delay: 1200.ms);
+      children: FooterData.socialMedia.asMap().entries.map((entry) {
+        final index = entry.key;
+        final social = entry.value;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppConstants.spaceS),
+          child: _buildSocialIcon(social.icon, social.label),
+        );
+      }).toList(),
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1200.ms);
   }
 
   Widget _buildSocialIcon(IconData icon, String label) {
@@ -305,21 +289,21 @@ class _TomaFooterState extends State<TomaFooter> {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppConstants.radiusM),
       child: Container(
-        width: 32,
-        height: 32,
+        width: AppConstants.spaceXL,
+        height: AppConstants.spaceXL,
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.grey.shade700,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppConstants.radiusM),
         ),
         child: Icon(
           icon,
           color: Colors.grey.shade400,
-          size: 16,
+          size: AppConstants.iconS,
         ),
       ),
     );
@@ -327,15 +311,13 @@ class _TomaFooterState extends State<TomaFooter> {
 
   Widget _buildBottomSection(BuildContext context) {
     final isMobile = ResponsiveHelper.isMobile(context);
-    final bottomLinks = ['Trust Center', 'Privacy Policy', 'Terms'];
 
     if (isMobile) {
       return Column(
         children: [
-          // Bottom navigation links
           Wrap(
             alignment: WrapAlignment.center,
-            children: bottomLinks.asMap().entries.map((entry) {
+            children: FooterData.bottomLinks.asMap().entries.map((entry) {
               final index = entry.key;
               final link = entry.value;
 
@@ -353,20 +335,20 @@ class _TomaFooterState extends State<TomaFooter> {
                     },
                     child: Text(
                       link,
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontSize: AppConstants.fontSizeXS + 1,
                         color: Colors.grey.shade500,
                       ),
                     ),
                   ),
-                  if (index < bottomLinks.length - 1)
+                  if (index < FooterData.bottomLinks.length - 1)
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      margin: EdgeInsets.symmetric(horizontal: AppConstants.spaceS),
                       child: Text(
                         '•',
-                        style: TextStyle(
+                        style: AppTextStyles.bodySmall.copyWith(
                           color: Colors.grey.shade700,
-                          fontSize: 13,
+                          fontSize: AppConstants.fontSizeXS + 1,
                         ),
                       ),
                     ),
@@ -374,11 +356,11 @@ class _TomaFooterState extends State<TomaFooter> {
               );
             }).toList(),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppConstants.spaceM),
           Text(
-            '2025 Toma, Inc. All rights reserved.',
-            style: TextStyle(
-              fontSize: 13,
+            FooterData.copyright,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontSize: AppConstants.fontSizeXS + 1,
               color: Colors.grey.shade600,
             ),
             textAlign: TextAlign.center,
@@ -390,18 +372,15 @@ class _TomaFooterState extends State<TomaFooter> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Copyright
         Text(
-          '2025 Toma, Inc. All rights reserved.',
-          style: TextStyle(
-            fontSize: 13,
+          FooterData.copyright,
+          style: AppTextStyles.bodySmall.copyWith(
+            fontSize: AppConstants.fontSizeXS + 1,
             color: Colors.grey.shade600,
           ),
         ),
-
-        // Bottom navigation links
         Row(
-          children: bottomLinks.asMap().entries.map((entry) {
+          children: FooterData.bottomLinks.asMap().entries.map((entry) {
             final index = entry.key;
             final link = entry.value;
 
@@ -418,20 +397,20 @@ class _TomaFooterState extends State<TomaFooter> {
                   },
                   child: Text(
                     link,
-                    style: TextStyle(
-                      fontSize: 13,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: AppConstants.fontSizeXS + 1,
                       color: Colors.grey.shade500,
                     ),
                   ),
                 ),
-                if (index < bottomLinks.length - 1)
+                if (index < FooterData.bottomLinks.length - 1)
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    margin: EdgeInsets.symmetric(horizontal: AppConstants.spaceM),
                     child: Text(
                       '•',
-                      style: TextStyle(
+                      style: AppTextStyles.bodySmall.copyWith(
                         color: Colors.grey.shade700,
-                        fontSize: 13,
+                        fontSize: AppConstants.fontSizeXS + 1,
                       ),
                     ),
                   ),
@@ -440,6 +419,6 @@ class _TomaFooterState extends State<TomaFooter> {
           }).toList(),
         ),
       ],
-    ).animate().fadeIn(duration: 800.ms, delay: 1500.ms);
+    ).animate().fadeIn(duration: AppConstants.animationSlow, delay: 1500.ms);
   }
 }
