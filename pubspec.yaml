@@ -60,6 +60,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/
     - assets/images/clients/
     - assets/images/brands/
     - assets/customers/

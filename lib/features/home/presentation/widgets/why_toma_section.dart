@@ -14,59 +14,59 @@ class WhyTomaSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80),
       color: Colors.white,
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: Column(
-            children: [
-              // Small header text
-              Text(
-                'Why Toma?',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade600,
-                  letterSpacing: 0.5,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms),
-
-              const SizedBox(height: 16),
-
-              // Main title
-              Text(
-                'There\'s No Competition',
-                style: TextStyle(
-                  fontSize: isMobile ? 32 : 48,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
-
-              const SizedBox(height: 24),
-
-              // Subtitle
-              Container(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: Text(
-                  'Built for dealerships that refuse to settle, Toma\'s AI outperforms the rest—smarter, faster, and more reliable than any alternative.',
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Column(
+              children: [
+                // Small header text
+                Text(
+                  'Why Toma?',
                   style: TextStyle(
-                    fontSize: isMobile ? 16 : 18,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                     color: Colors.grey.shade600,
-                    height: 1.6,
+                    letterSpacing: 0.5,
                   ),
                   textAlign: TextAlign.center,
-                ).animate().fadeIn(duration: 800.ms, delay: 400.ms),
-              ),
+                ).animate().fadeIn(duration: 600.ms),
 
-              const SizedBox(height: 60),
+                const SizedBox(height: 16),
 
-              // Features grid
-              _buildFeaturesGrid(context, isMobile),
-            ],
+                // Main title
+                Text(
+                  'There\'s No Competition',
+                  style: TextStyle(
+                    fontSize: isMobile ? 32 : 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
+
+                const SizedBox(height: 24),
+
+                // Subtitle
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Text(
+                    'Built for dealerships that refuse to settle, Toma\'s AI outperforms the rest—smarter, faster, and more reliable than any alternative.',
+                    style: TextStyle(
+                      fontSize: isMobile ? 16 : 18,
+                      color: Colors.grey.shade600,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ).animate().fadeIn(duration: 800.ms, delay: 400.ms),
+                ),
+
+                const SizedBox(height: 60),
+
+                // Features grid
+                _buildFeaturesGrid(context, isMobile),
+              ],
+            ),
           ),
         ),
       ),
@@ -216,7 +216,7 @@ class WhyTomaSection extends StatelessWidget {
   }
 }
 
-// Alternative version with custom icons to better match the original design
+// Alternative version with custom icons using the same professional layout
 class WhyTomaSectionCustomIcons extends StatelessWidget {
   const WhyTomaSectionCustomIcons({super.key});
 
@@ -229,59 +229,59 @@ class WhyTomaSectionCustomIcons extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80),
       color: Colors.white,
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          padding: ResponsiveHelper.getHorizontalPadding(context),
-          child: Column(
-            children: [
-              // Small header text
-              Text(
-                'Why Toma?',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade600,
-                  letterSpacing: 0.5,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms),
-
-              const SizedBox(height: 16),
-
-              // Main title
-              Text(
-                'There\'s No Competition',
-                style: TextStyle(
-                  fontSize: isMobile ? 32 : 48,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
-
-              const SizedBox(height: 24),
-
-              // Subtitle
-              Container(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: Text(
-                  'Built for dealerships that refuse to settle, Toma\'s AI outperforms the rest—smarter, faster, and more reliable than any alternative.',
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Column(
+              children: [
+                // Small header text
+                Text(
+                  'Why Toma?',
                   style: TextStyle(
-                    fontSize: isMobile ? 16 : 18,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                     color: Colors.grey.shade600,
-                    height: 1.6,
+                    letterSpacing: 0.5,
                   ),
                   textAlign: TextAlign.center,
-                ).animate().fadeIn(duration: 800.ms, delay: 400.ms),
-              ),
+                ).animate().fadeIn(duration: 600.ms),
 
-              const SizedBox(height: 60),
+                const SizedBox(height: 16),
 
-              // Features grid with custom icons
-              _buildCustomFeaturesGrid(context, isMobile),
-            ],
+                // Main title
+                Text(
+                  'There\'s No Competition',
+                  style: TextStyle(
+                    fontSize: isMobile ? 32 : 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3),
+
+                const SizedBox(height: 24),
+
+                // Subtitle
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Text(
+                    'Built for dealerships that refuse to settle, Toma\'s AI outperforms the rest—smarter, faster, and more reliable than any alternative.',
+                    style: TextStyle(
+                      fontSize: isMobile ? 16 : 18,
+                      color: Colors.grey.shade600,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ).animate().fadeIn(duration: 800.ms, delay: 400.ms),
+                ),
+
+                const SizedBox(height: 60),
+
+                // Features grid with custom icons
+                _buildCustomFeaturesGrid(context, isMobile),
+              ],
+            ),
           ),
         ),
       ),

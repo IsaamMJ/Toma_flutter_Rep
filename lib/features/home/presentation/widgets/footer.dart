@@ -25,44 +25,47 @@ class _TomaFooterState extends State<TomaFooter> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(40), // Outer padding for the container
+      padding: const EdgeInsets.all(40),
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxWidth(context),
-          ),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(24), // Rounded edges like in the image
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 32 : 60,
-            vertical: isMobile ? 40 : 60,
-          ),
-          child: Column(
-            children: [
-              if (isMobile)
-                _buildMobileLayout(context)
-              else
-                _buildDesktopLayout(context),
-
-              const SizedBox(height: 40),
-
-              // Social media icons
-              _buildSocialMediaSection(),
-
-              const SizedBox(height: 40),
-
-              // Divider line
-              Container(
-                height: 1,
-                color: Colors.grey.shade800,
-                margin: const EdgeInsets.only(bottom: 30),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            padding: ResponsiveHelper.getHorizontalPadding(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(24),
               ),
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 32 : 60,
+                vertical: isMobile ? 40 : 60,
+              ),
+              child: Column(
+                children: [
+                  if (isMobile)
+                    _buildMobileLayout(context)
+                  else
+                    _buildDesktopLayout(context),
 
-              // Bottom section with copyright and links
-              _buildBottomSection(context),
-            ],
+                  const SizedBox(height: 40),
+
+                  // Social media icons
+                  _buildSocialMediaSection(),
+
+                  const SizedBox(height: 40),
+
+                  // Divider line
+                  Container(
+                    height: 1,
+                    color: Colors.grey.shade800,
+                    margin: const EdgeInsets.only(bottom: 30),
+                  ),
+
+                  // Bottom section with copyright and links
+                  _buildBottomSection(context),
+                ],
+              ),
+            ),
           ),
         ),
       ),
